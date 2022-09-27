@@ -13,7 +13,6 @@ display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 wi = pygame.display.Info().current_w
 he = pygame.display.Info().current_h
 
-
 if display_siz == (1366,768):
     screen = pygame.display.set_mode((1366,768),pygame.FULLSCREEN)
     background_image = pygame.image.load(os.path.join('bj',"background1366X768.png")).convert()

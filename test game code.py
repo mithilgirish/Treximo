@@ -1,92 +1,62 @@
-"""
-import pygame
-
-pygame.init()
-win = pygame.display.set_mode((500, 500))
-pygame.display.set_caption("First Game")
-
-x = 250
-y = 250
-radius = 15
-vel = 10
-
-run = True
-while run:
-
-    win.fill((0, 0, 0))
-
-    pygame.draw.circle(win, (255, 255, 255), (int(x), int(y)), radius)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    # Movement
-    userInput = pygame.key.get_pressed()
-    if userInput[pygame.K_LEFT] and x > 0 + radius + vel:
-        x -= vel
-    if userInput[pygame.K_RIGHT] and x < 500 - radius - vel:
-        x += vel
-    if userInput[pygame.K_UP] and y > 0 + radius + vel:
-        y -= vel
-    if userInput[pygame.K_DOWN] and y < 500 - radius - vel:
-        y += vel
-
-    pygame.time.delay(10)
-    pygame.display.update()
-"""
-"""
-import pygame
-
-pygame.init()
-win = pygame.display.set_mode((500, 500))
-
-x = 250
-y = 250
-radius = 15
-vel_x = 10
-vel_y = 10
-jump = False
-
-run = True
-while run:
-    win.fill((0, 0, 0))
-    pygame.draw.circle(win, (255, 255, 255), (int(x), int(y)), radius)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    # Movement
-    userInput = pygame.key.get_pressed()
-
-    #Jump
-    if jump is False and userInput[pygame.K_SPACE]:
-        jump = True
-    if jump is True:
-        y -= vel_y*3
-        vel_y -= 1
-        if vel_y < -10:
-            jump = False
-            vel_y = 10
-    pygame.time.Clock().tick(60)
-    #pygame.time.delay(20)
-    pygame.display.update()
-"""
-"""
 import pygame
 import os
 
 pygame.init()
-win = pygame.display.set_mode((1285, 801))
-bg_img = pygame.image.load(os.path.join("bj","background1280X800.png"))
-bg = pygame.transform.scale(bg_img, (1285, 801))
+win = pygame.display.set_mode((1920, 1080))
+bg_img = pygame.image.load(os.path.join("Background","4.png"))
+bg = pygame.transform.scale(bg_img, (1920, 1080))
 
-width = 1280
+width = 1920
 i = 0
 
-x = 650
+player1=[pygame.image.load(os.path.join("players",'1_run0.png')),
+         pygame.image.load(os.path.join("players",'1_run0.png')),
+         pygame.image.load(os.path.join("players",'1_run0.png')),
+         pygame.image.load(os.path.join("players",'1_run1.png')),
+         pygame.image.load(os.path.join("players",'1_run1.png')),
+         pygame.image.load(os.path.join("players",'1_run1.png')),
+         pygame.image.load(os.path.join("players",'1_run2.png')),
+         pygame.image.load(os.path.join("players",'1_run2.png')),
+         pygame.image.load(os.path.join("players",'1_run2.png')),
+         pygame.image.load(os.path.join("players",'1_jump.png'))]
+
+player2=[pygame.image.load(os.path.join("players",'2_run0.png')),
+         pygame.image.load(os.path.join("players",'2_run0.png')),
+         pygame.image.load(os.path.join("players",'2_run0.png')),
+         pygame.image.load(os.path.join("players",'2_run1.png')),
+         pygame.image.load(os.path.join("players",'2_run1.png')),
+         pygame.image.load(os.path.join("players",'2_run1.png')),
+         pygame.image.load(os.path.join("players",'2_run2.png')),
+         pygame.image.load(os.path.join("players",'2_run2.png')),
+         pygame.image.load(os.path.join("players",'2_run2.png')),
+         pygame.image.load(os.path.join("players",'2_jump.png'))]
+
+player3=[pygame.image.load(os.path.join("players",'3_run0.png')),
+         pygame.image.load(os.path.join("players",'3_run0.png')),
+         pygame.image.load(os.path.join("players",'3_run0.png')),
+         pygame.image.load(os.path.join("players",'3_run1.png')),
+         pygame.image.load(os.path.join("players",'3_run1.png')),
+         pygame.image.load(os.path.join("players",'3_run1.png')),
+         pygame.image.load(os.path.join("players",'3_run2.png')),
+         pygame.image.load(os.path.join("players",'3_run2.png')),
+         pygame.image.load(os.path.join("players",'3_run2.png')),
+         pygame.image.load(os.path.join("players",'3_jump.png'))]
+
+player4=[pygame.image.load(os.path.join("players",'4_run0.png')),
+         pygame.image.load(os.path.join("players",'4_run0.png')),
+         pygame.image.load(os.path.join("players",'4_run0.png')),
+         pygame.image.load(os.path.join("players",'4_run1.png')),
+         pygame.image.load(os.path.join("players",'4_run1.png')),
+         pygame.image.load(os.path.join("players",'4_run1.png')),
+         pygame.image.load(os.path.join("players",'4_run2.png')),
+         pygame.image.load(os.path.join("players",'4_run2.png')),
+         pygame.image.load(os.path.join("players",'4_run2.png')),
+         pygame.image.load(os.path.join("players",'4_jump.png'))]
+         
+n=0
+x = 1921/2
 y = 650
-radius = 15
+radius = 30
 vel_x = 10
 vel_y = 10
 jump = False
@@ -106,14 +76,25 @@ while run:
     if i == -width:
         win.blit(bg, (width+i, 0))
         i = 0
-    i -= 8
+    i -= 12
 
-    pygame.draw.circle(win, (0, 0, 0), (int(x), int(y)), radius)
+    
+    #player
+    
+    win.blit(player1[n],(int(x),int(y))) #player1
+    #win.blit(player2[n],(int(x),int(y))) #player2
+    #win.blit(player3[n],(int(x),int(y))) #player3
+    #win.blit(player4[n],(int(x),int(y))) #player4
+    
+    n = n+1
+    if n>=6:
+        n=0
     #Jump
     userInput = pygame.key.get_pressed()
     if jump is False and userInput[pygame.K_SPACE]:
         jump = True
     if jump is True:
+        n=7
         y -= vel_y*4
         vel_y -= 1
         if vel_y < -10:
@@ -122,6 +103,7 @@ while run:
 
     pygame.time.Clock().tick(60)
     pygame.display.update()
+
 """
 import pygame
 import os
@@ -256,3 +238,4 @@ while run:
 
     # Draw Game in Window
     draw_game()
+"""

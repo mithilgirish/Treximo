@@ -12,6 +12,8 @@ pygame.display.set_icon(programIcon)# logo/icon
 display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)#display size
 wi = pygame.display.Info().current_w
 he = pygame.display.Info().current_h
+clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))
+
   
 if display_siz == (1366,768):
     screen = pygame.display.set_mode((1366,768),pygame.FULLSCREEN)
@@ -108,22 +110,6 @@ else:
 def main_menu():
     while True:
 
-        screen.blit(main_image, [0, 0])
-
-
-        mx, my = pygame.mouse.get_pos()
-
-
-        if button_1.collidepoint((mx, my)) and click:
-            game()
-        if button_2.collidepoint((mx, my)) and click:
-            about()
-        if button_3.collidepoint((mx,my)) and click:
-            pygame.quit()
-            sys.exit()
-
-
-
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -137,6 +123,30 @@ def main_menu():
                 if event.button == 1:
                     click = True
 
+
+
+        screen.blit(main_image, [0, 0])
+
+
+        mx, my = pygame.mouse.get_pos()
+
+
+        if button_1.collidepoint((mx, my)) and click:
+            clicksound.play()
+            game()
+        if button_2.collidepoint((mx, my)) and click:
+            clicksound.play()
+            store()
+        if button_3.collidepoint((mx,my)) and click:
+            clicksound.play()
+            pygame.quit()
+            sys.exit()
+
+
+
+
+        
+
         pygame.display.update()
 
         mainClock.tick(60)
@@ -146,7 +156,7 @@ def main_menu():
 
 
 
-
+#game code
 def game():
     running = True
     while running:
@@ -168,6 +178,7 @@ def game():
 
         pygame.display.update()
 
+#game pause code
 def pause():
     running = True
     while running:
@@ -214,6 +225,7 @@ def pause():
         pygame.display.update()
         mainClock.tick(60)
 
+#game over code
 def gameover():
     running = True
     while running:
@@ -260,20 +272,15 @@ def gameover():
         pygame.display.update()
         mainClock.tick(60)
 
-def about():
+#store
+def store():
+    p = 1
     running = True
     while running:
-        screen.fill((0, 0, 0))
-
-        def draw_text(text, font, color, surface, x, y):
-            textobj = font.render(text, 1, color)
-            textrect = textobj.get_rect()
-            textrect.center = (x,y)
-            surface.blit(textobj, textrect)
-
-        draw_text('ABOUT', font1, (74, 224, 191), screen, wi /2, 20)
-        draw_text('HI! this is Mithil ', font2, (255, 255, 255), screen, wi/2 , ts * 2.5)
-        draw_text(' -the creater behind BABA_Jankes', font2, (255, 255, 255), screen, wi / 2, ts * 4)
+        storeBG = pygame.image.load(os.path.join("Store","BG.png")).convert()
+        screen.blit(pygame.transform.scale(storeBG, display_siz), [0, 0])
+        
+        click = False
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -281,19 +288,93 @@ def about():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+        
+        BSX = 100
+        BSY = 50
+        BG_B = pygame.Rect(250, 150, BSX, BSY)
+        P_B = pygame.Rect(400, 150, BSX, BSY)
 
+        pygame.draw.rect(screen, (255, 255, 244), BG_B)
+        pygame.draw.rect(screen, (255, 255, 200), P_B)
+
+        mx, my = pygame.mouse.get_pos()
+
+        if BG_B.collidepoint((mx, my)) and click:
+            p=1
+        if P_B.collidepoint((mx, my)) and click:
+            p=2
+
+        
+        
+        def draw_text(text, font, color, surface, x,y):
+            textobj = font.render(text, 1, color)
+            textrect = textobj.get_rect()
+            textrect.center = (x,y)
+            surface.blit(textobj, textrect)
+        
+        
+        def store_BG(): #background
+            ISX = 576
+            ISY = 324
+            BG1 = pygame.image.load(os.path.join("Store","1.png"))
+            BG2 = pygame.image.load(os.path.join("Store","2.png"))
+            BG3 = pygame.image.load(os.path.join("Store","3.png"))
+            BG4 = pygame.image.load(os.path.join("Store","4.png"))
+
+            screen.blit(pygame.transform.scale(BG1, (ISX,ISY)), [300, 250])
+            screen.blit(pygame.transform.scale(BG2, (ISX,ISY)), [1100, 250])
+            screen.blit(pygame.transform.scale(BG3, (ISX,ISY)), [300, 700])
+            screen.blit(pygame.transform.scale(BG4, (ISX,ISY)), [1100, 700])
+
+            draw_text('Select', font2, (255, 255, 255), screen, 300+(ISX/2), 250+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 1100+(ISX/2), 250+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 300+(ISX/2), 700+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 1100+(ISX/2), 700+ISY+30)
+
+        def store_P(): #player
+            ISX = 576
+            ISY = 324
+            BG1 = pygame.image.load(os.path.join("Store","p1.png"))
+            BG2 = pygame.image.load(os.path.join("Store","p2.png"))
+            BG3 = pygame.image.load(os.path.join("Store","p3.png"))
+            BG4 = pygame.image.load(os.path.join("Store","p4.png"))
+
+            screen.blit(pygame.transform.scale(BG1, (ISX,ISY)), [300, 250])
+            screen.blit(pygame.transform.scale(BG2, (ISX,ISY)), [1100, 250])
+            screen.blit(pygame.transform.scale(BG3, (ISX,ISY)), [300, 700])
+            screen.blit(pygame.transform.scale(BG4, (ISX,ISY)), [1100, 700])
+
+            draw_text('Select', font2, (255, 255, 255), screen, 300+(ISX/2), 250+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 1100+(ISX/2), 250+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 300+(ISX/2), 700+ISY+30)
+            draw_text('Select', font2, (255, 255, 255), screen, 1100+(ISX/2), 700+ISY+30)
+
+        if p == 1:
+            store_BG()
+        elif p == 2:
+            store_P()
+        else:
+            p = 1
+
+        #screen.fill((0, 0, 0)) 
+   
+
+
+        draw_text('STORE', font1, (255, 255, 255), screen, wi /2, ts)
+        #draw_text('//', font2, (255, 255, 255), screen, wi/2 , ts * 2.5)
+        #raw_text(' //', font2, (255, 255, 255), screen, wi / 2, ts * 4)
+
+        
+
+        
+        
+            
         pygame.display.update()
         mainClock.tick(60)
 
 
 
-
-
-
 main_menu()
-
-
-
-
-
-

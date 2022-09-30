@@ -54,9 +54,8 @@ player4=[pygame.image.load(os.path.join("players",'4_run0.png')),
          pygame.image.load(os.path.join("players",'4_jump.png'))]
          
 n=0
-x = 1921/2
+x = width/2
 y = 650
-radius = 30
 vel_x = 10
 vel_y = 10
 jump = False
@@ -68,7 +67,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    win.fill((0,0,0))
+    #win.fill((0,0,0))
 
     #Create looping background
     win.blit(bg, (i, 0))

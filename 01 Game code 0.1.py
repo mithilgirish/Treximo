@@ -286,11 +286,11 @@ def store():
         
         
         def store_BG(): #background
-            pygame.draw.rect(screen, (22, 22, 29), BG_B)
-            pygame.draw.rect(screen, (226, 226, 233), P_B)
+            pygame.draw.rect(screen, (226, 226, 233), BG_B)
+            pygame.draw.rect(screen, (22, 22, 29), P_B)
 
-            draw_text('Background', font3, (255, 255, 255), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
-            draw_text('Player', font3, (0, 0, 0), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
+            draw_text('Background', font3, (0, 0, 0), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
+            draw_text('Player', font3, (255, 255, 255), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
 
             BG1 = pygame.image.load(os.path.join("Store","1.png"))
             BG2 = pygame.image.load(os.path.join("Store","2.png"))
@@ -329,11 +329,11 @@ def store():
 
             
         def store_P(): #player
-            pygame.draw.rect(screen, (226, 226, 233), BG_B)
-            pygame.draw.rect(screen, (22, 22, 29), P_B)
+            pygame.draw.rect(screen, (22, 22, 29), BG_B)
+            pygame.draw.rect(screen, (226, 226, 233), P_B)
 
-            draw_text('Background', font3, (0, 0, 0), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
-            draw_text('Player', font3, (255, 255, 255), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
+            draw_text('Background', font3, (255, 255, 255), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
+            draw_text('Player', font3, (0, 0, 0), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
             
             BG1 = pygame.image.load(os.path.join("Store","p1.png"))
             BG2 = pygame.image.load(os.path.join("Store","p2.png"))

@@ -1,4 +1,4 @@
-import pygame,sys
+import pygame,sys 
 import os
 import random
 from pygame.locals import *
@@ -12,8 +12,7 @@ programIcon = pygame.image.load('LOGO.png')
 pygame.display.set_icon(programIcon)# logo/icon
  
 display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)#display size
-wi = pygame.display.Info().current_w
-he = pygame.display.Info().current_h
+
 
 
 
@@ -23,7 +22,8 @@ clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
 
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
-main_image = pygame.image.load(os.path.join('Main menu BG', "BG.png")).convert()
+
+main_image = pygame.image.load(os.path.join('Main menu BG', "BG.png"))
 main_image_mountain = pygame.image.load(os.path.join('Main menu BG', "Mountain.png"))
 main_image_star1 = pygame.image.load(os.path.join('Main menu BG', "star 1.png"))
 main_image_star2 = pygame.image.load(os.path.join('Main menu BG', "star 2.png"))
@@ -81,10 +81,11 @@ player4=[pygame.image.load(os.path.join("players",'4_run0.png')),
 
 
 
-
+#correction factor
  
 if display_siz == (1366,768):
-    DS = 1 
+    DS = 1
+    screen = pygame.display.set_mode((1366,768), pygame.FULLSCREEN)
     CF = 0.71
     
 elif display_siz == (1920,1080):
@@ -96,13 +97,13 @@ elif display_siz == (1920,1080):
 elif display_siz == (2560,1440):
     DS = 3
     screen = pygame.display.set_mode((2560,1440), pygame.FULLSCREEN)
-    CF = 1.5
+    CF = 1.31
     
 
 elif display_siz == (3840,2160):
     DS = 4
     screen = pygame.display.set_mode((3840,2160), pygame.FULLSCREEN)
-    CF = 4
+    CF = 2
     
 
 else:
@@ -112,20 +113,25 @@ else:
     CF = 0.71
    
 
-background_image = pygame.transform.scale(background_image, display_siz)
-main_image = pygame.transform.scale(main_image, display_siz)
+background_image = pygame.transform.scale(background_image, display_siz)#game background
+
+main_image = pygame.transform.scale(main_image, display_siz) #main menu background
 main_image_mountain = pygame.transform.scale(main_image_mountain, display_siz)
 main_image_star1 = pygame.transform.scale(main_image_star1, (30*CF,30*CF))
 main_image_star2 = pygame.transform.scale(main_image_star2, (30*CF,30*CF))
+
 button_1y = int(418*CF)
 button_2y = int(622*CF)
 button_3y = int(819*CF)
 button_x = int(665*CF)
+
 button_w = int(578*CF)
 button_h = int(135*CF)
+
 button_1 = pygame.Rect(button_x, button_1y, button_w, button_h)
 button_2 = pygame.Rect(button_x, button_2y, button_w, button_h)
 button_3 = pygame.Rect(button_x, button_3y, button_w, button_h)
+
 font = pygame.font.Font('Quicksand.ttf',int(200*CF))
 font1 = pygame.font.Font('Quicksand.ttf', int(100*CF))
 font2 = pygame.font.Font('Quicksand.ttf', int(60*CF))
@@ -135,6 +141,7 @@ ts = int(60*CF)
 
 def load():
     LOAD_f = pygame.font.Font('FFF.ttf',int(180*CF))
+    
     for i in range(0,256):
         pygame.draw.rect(screen, (i, i, i), (pygame.Rect((display_siz[0]-(300*CF))/2, 800*CF, 300*CF, 10*CF)))
         pygame.draw.rect(screen, (i, i, i), (pygame.Rect((display_siz[0]-(300*CF))/2, 750*CF, 300*CF, 10*CF)))
@@ -146,6 +153,7 @@ def load():
                     textrect = textobj.get_rect()
                     textrect.center = (x,y)
                     surface.blit(textobj, textrect)
+                    
         draw_text('TREXIMO', LOAD_f, (i, i, i), screen, display_siz[0]/2, 300*CF)
         pygame.draw.rect(screen, (i, i, i), (pygame.Rect((display_siz[0]-(300*CF))/2, 750*CF, (i/6)*CF, 50*CF)))
 
@@ -220,7 +228,7 @@ def main_menu():
 
 #store
 def store():
-    p = 1
+    p = 1 #page
     running = True
     while running:
         storeBG = pygame.image.load(os.path.join("Store","BG.png")).convert()
@@ -312,20 +320,19 @@ def store():
             #draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
             #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
 
-            #coins button
-            x = 50*CF
-            y = 50*CF
+            #buy with coins button
+            CS = 50*CF 
             pygame.draw.rect(screen, (153, 255, 255), BUY2)
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(x/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [1100*CF+(ISX/2)-x-35, 275*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(y/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY3)
-            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(x/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [300*CF+(ISX/2)-x-35, 695*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(y/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY4)
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(x/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [1100*CF+(ISX/2)-x-35, 695*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(y/2)])
 
             
         def store_P(): #player
@@ -355,20 +362,19 @@ def store():
             #draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
             #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
 
-            #coins button
-            x = 50*CF
-            y = 50*CF
+            #buy with coins button
+            CS = 50*CF 
             pygame.draw.rect(screen, (153, 255, 255), BUY2)
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(x/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [1100*CF+(ISX/2)-x-35, 275*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-35, 275*CF+ISY-(y/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY3)
-            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(x/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [300*CF+(ISX/2)-x-35, 695*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-35, 695*CF+ISY-(y/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY4)
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(x/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (x,y)), [1100*CF+(ISX/2)-x-35, 695*CF+ISY-(y/2)])
+            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-35, 695*CF+ISY-(y/2)])
 
             
             

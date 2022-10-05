@@ -14,10 +14,6 @@ pygame.display.set_icon(programIcon)# logo/icon
 display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)#display size
 
 
-
-
-
-
 clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
 
 
@@ -324,15 +320,15 @@ def store():
             CS = 50*CF 
             pygame.draw.rect(screen, (153, 255, 255), BUY2)
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY3)
             draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY4)
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
             
         def store_P(): #player
@@ -366,15 +362,15 @@ def store():
             CS = 50*CF 
             pygame.draw.rect(screen, (153, 255, 255), BUY2)
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-35, 275*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY3)
             draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-35, 695*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
             
             pygame.draw.rect(screen, (153, 255, 255), BUY4)
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-35, 695*CF+ISY-(y/2)])
+            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
             
             
@@ -587,4 +583,3 @@ def gameover():
 
 
 load()
-

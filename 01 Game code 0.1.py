@@ -1,4 +1,5 @@
-import pygame,sys 
+import pygame
+import sys 
 import os
 import random
 from pygame.locals import *
@@ -19,16 +20,10 @@ clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
-main_image = pygame.image.load(os.path.join('Main menu BG', "BG.png"))
-main_image_mountain = pygame.image.load(os.path.join('Main menu BG', "Mountain.png"))
-main_image_star1 = pygame.image.load(os.path.join('Main menu BG', "star 1.png"))
-main_image_star2 = pygame.image.load(os.path.join('Main menu BG', "star 2.png"))
 
 
-background_image = pygame.image.load(os.path.join("Background","1.png"))
-#background_image = pygame.image.load(os.path.join("Background","2.png"))
-#background_image = pygame.image.load(os.path.join("Background","3.png"))
-#background_image = pygame.image.load(os.path.join("Background","4.png"))
+
+
 
 player1=[pygame.image.load(os.path.join("players",'1_run0.png')),
          pygame.image.load(os.path.join("players",'1_run0.png')),
@@ -109,9 +104,16 @@ else:
     CF = 0.71
    
 
-background_image = pygame.transform.scale(background_image, display_siz)#game background
 
-main_image = pygame.transform.scale(main_image, display_siz) #main menu background
+
+
+#main menu
+main_image = pygame.image.load(os.path.join('Main menu BG', "BG.png"))
+main_image_mountain = pygame.image.load(os.path.join('Main menu BG', "Mountain.png"))
+main_image_star1 = pygame.image.load(os.path.join('Main menu BG', "star 1.png"))
+main_image_star2 = pygame.image.load(os.path.join('Main menu BG', "star 2.png"))
+
+main_image = pygame.transform.scale(main_image, display_siz) 
 main_image_mountain = pygame.transform.scale(main_image_mountain, display_siz)
 main_image_star1 = pygame.transform.scale(main_image_star1, (30*CF,30*CF))
 main_image_star2 = pygame.transform.scale(main_image_star2, (30*CF,30*CF))
@@ -132,7 +134,7 @@ font = pygame.font.Font('Quicksand.ttf',int(200*CF))
 font1 = pygame.font.Font('Quicksand.ttf', int(100*CF))
 font2 = pygame.font.Font('Quicksand.ttf', int(60*CF))
 font3 = pygame.font.Font('Quicksand.ttf', int(30*CF))
-ts = int(60*CF)
+
 
 
 def load():
@@ -221,14 +223,61 @@ def main_menu():
         pygame.display.update()
         mainClock.tick(3*CF)
 
+def buy(buy_image):
+    running = True
+    while running:
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+                    
+        yes = pygame.Rect(710*CF, 850*CF, 225, 85)
+        no = pygame.Rect(980*CF, 850*CF, 225, 85)
+        
+        
+        buy_button = pygame.image.load(os.path.join("Store","buy_button.png"))
+        screen.blit(pygame.transform.scale(buy_button, (755,960)), [display_siz[0]/2-((755*CF)/2), 50])
+        screen.blit(pygame.transform.scale(buy_image, (ISX,ISY)), [display_siz[0]/2-((ISX)/2), 300*CF])
 
+        mx, my = pygame.mouse.get_pos()
+        
+        if yes.collidepoint((mx, my)) and click:
+            running = True
+        if no.collidepoint((mx, my)) and click:
+            running = False
+            
+
+        pygame.display.update()
+        mainClock.tick(60)
+        
 #store
 def store():
     p = 1 #page
     running = True
     while running:
+        
+        global ISX,ISY
         storeBG = pygame.image.load(os.path.join("Store","BG.png")).convert()
         screen.blit(pygame.transform.scale(storeBG, display_siz), [0, 0])#backgrond
+
+        def draw_text(text, font, color, surface, x,y):
+            textobj = font.render(text, 1, color)
+            textrect = textobj.get_rect()
+            textrect.center = (x,y)
+            surface.blit(textobj, textrect)
+
+        draw_text('STORE', font1, (255, 255, 255), screen, display_siz[0]/2, int(60*CF))
+
+        button = pygame.image.load(os.path.join("Store","button.png"))#button
+
+
 
         storeBG_L1 = pygame.image.load(os.path.join("Store","BG_layer1.png"))
         screen.blit(pygame.transform.scale(storeBG_L1, (1430*CF,850*CF)), [270*CF, 220*CF])
@@ -278,16 +327,8 @@ def store():
         if B_B.collidepoint((mx, my)) and click:
             running = False
             
-        
-        #pygame.draw.rect(screen, (255, 255, 200), B_B)
-        
-        
-        def draw_text(text, font, color, surface, x,y):
-            textobj = font.render(text, 1, color)
-            textrect = textobj.get_rect()
-            textrect.center = (x,y)
-            surface.blit(textobj, textrect)
-        
+
+
         
         def store_BG(): #background
             pygame.draw.rect(screen, (226, 226, 233), BG_B)
@@ -318,17 +359,28 @@ def store():
 
             #buy with coins button
             CS = 50*CF 
-            pygame.draw.rect(screen, (153, 255, 255), BUY2)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
             
-            pygame.draw.rect(screen, (153, 255, 255), BUY3)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
             
-            pygame.draw.rect(screen, (153, 255, 255), BUY4)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
+
+            if BUY2.collidepoint((mx, my)) and click:
+                buy(BG2)
+                
+            if BUY3.collidepoint((mx, my)) and click:
+                buy(BG3)
+                
+            if BUY4.collidepoint((mx, my)) and click:
+                buy(BG4)
+                
+            
 
             
         def store_P(): #player
@@ -360,19 +412,26 @@ def store():
 
             #buy with coins button
             CS = 50*CF 
-            pygame.draw.rect(screen, (153, 255, 255), BUY2)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
             
-            pygame.draw.rect(screen, (153, 255, 255), BUY3)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
             
-            pygame.draw.rect(screen, (153, 255, 255), BUY4)
+            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
             draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
             screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
-            
+            if BUY2.collidepoint((mx, my)) and click:
+                buy(BG2)
+                
+            if BUY3.collidepoint((mx, my)) and click:
+                buy(BG3)
+                
+            if BUY4.collidepoint((mx, my)) and click:
+                buy(BG4)
             
 
         if p == 1:
@@ -384,7 +443,6 @@ def store():
 
    
 
-        draw_text('STORE', font1, (255, 255, 255), screen, display_siz[0]/2, ts)
         
   
         pygame.display.update()
@@ -396,31 +454,42 @@ def store():
 
 #game code
 def game():
-    BG_S_1 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
-    #BG_S_2 = pygame.mixer.music.load(os.path.join("BG songs","BG_S2.mp3"))
-    #BG_S_3 = pygame.mixer.music.load(os.path.join("BG songs","BG_S3.mp3"))
-    #BG_S_4 = pygame.mixer.music.load(os.path.join("BG songs","BG_S4.mp3"))
     
+    #game background and sound
+    background_image = pygame.image.load(os.path.join("Background","1.png"))
+    BG_S_1 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+    
+    #background_image = pygame.image.load(os.path.join("Background","2.png"))
+    #BG_S_2 = pygame.mixer.music.load(os.path.join("BG songs","BG_S2.mp3"))
+    
+    #background_image = pygame.image.load(os.path.join("Background","3.png"))
+    #BG_S_3 = pygame.mixer.music.load(os.path.join("BG songs","BG_S3.mp3"))
+    
+    #background_image = pygame.image.load(os.path.join("Background","4.png"))
+    #BG_S_4 = pygame.mixer.music.load(os.path.join("BG songs","BG_S4.mp3"))
+
+    background_image = pygame.transform.scale(background_image, display_siz)
     pygame.mixer.music.play(-1)
+    
     #background
     width = display_siz[0]
     i = 0
-    #
-    PIX = (270,359)
-    IDK = 170
-    FPS = 70
-    JN = 4
     
     #player
     n = 0
+    PIX = (270*CF,359*CF) #size
     x = display_siz[0]/2
-    y = display_siz[1]-(PIX[1]*CF)-IDK*CF
-    vel_x = 10
-    vel_y = 10
+    y = display_siz[1]-(PIX[1])-170*CF
+    vel_y = 10*CF #speed
     jump = False
+    JN = 4 #jump height
+
+    
     
     running_G = True
     while running_G:
+
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -435,15 +504,12 @@ def game():
         i -= abs(int(12*CF))
 
 
-        
-        
 
-        
         #player
-        screen.blit(pygame.transform.scale(player1[n],(PIX[0]*CF,PIX[1]*CF)),(int(x),int(y)))#player1
-        #screen.blit(pygame.transform.scale(player2[n],(PIX[0]*CF,PIX[1]*CF)),(int(x),int(y))) #player2
-        #screen.blit(pygame.transform.scale(player3[n],(PIX[0]*CF,PIX[1]*CF)),(int(x),int(y))) #player3
-        #screen.blit(pygame.transform.scale(player4[n],(PIX[0]*CF,PIX[1]*CF)),(int(x),int(y))) #player4
+        screen.blit(pygame.transform.scale(player1[n],(PIX[0],PIX[1])),(int(x),int(y)))#player1
+        #screen.blit(pygame.transform.scale(player2[n],(PIX[0],PIX[1])),(int(x),int(y))) #player2
+        #screen.blit(pygame.transform.scale(player3[n],(PIX[0],PIX[1])),(int(x),int(y))) #player3
+        #screen.blit(pygame.transform.scale(player4[n],(PIX[0],PIX[1])),(int(x),int(y))) #player4
         
         n = n+1
         if n>=6:
@@ -456,9 +522,9 @@ def game():
             n=7
             y -= vel_y*JN*CF
             vel_y -= 1
-            if vel_y < -10:
+            if vel_y < -10*CF:
                 jump = False
-                vel_y = 10
+                vel_y = 10*CF
 
         
 
@@ -471,7 +537,7 @@ def game():
                     pause()
 
             
-        pygame.time.Clock().tick(FPS*CF)
+        pygame.time.Clock().tick(60*CF)
         pygame.display.update()
 
 
@@ -579,7 +645,5 @@ def gameover():
 
         pygame.display.update()
         mainClock.tick(60)
-
-
 
 load()

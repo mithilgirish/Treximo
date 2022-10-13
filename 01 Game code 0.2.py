@@ -108,10 +108,10 @@ else:
 
 
 #main menu
-main_image = pygame.image.load(os.path.join('Main menu BG', "BG.png"))
-main_image_mountain = pygame.image.load(os.path.join('Main menu BG', "Mountain.png"))
-main_image_star1 = pygame.image.load(os.path.join('Main menu BG', "star 1.png"))
-main_image_star2 = pygame.image.load(os.path.join('Main menu BG', "star 2.png"))
+main_image = pygame.image.load(os.path.join("Background", "BG.png"))
+main_image_mountain = pygame.image.load(os.path.join("Background", "Mountain.png"))
+main_image_star1 = pygame.image.load(os.path.join("Background", "star 1.png"))
+main_image_star2 = pygame.image.load(os.path.join("Background", "star 2.png"))
 
 main_image = pygame.transform.scale(main_image, display_siz) 
 main_image_mountain = pygame.transform.scale(main_image_mountain, display_siz)

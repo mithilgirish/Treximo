@@ -20,8 +20,9 @@ clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
-
-
+#DATA
+player_data = {"p1":["no"],"p2":["yes","no"],"p3":["yes","no"],"p4":["yes","no"]}
+BG_data = {"b1":["no"],"b2":["yes","no"],"b3":["yes","no"],"b4":["yes","no"]}
 
 
 
@@ -223,9 +224,12 @@ def main_menu():
         pygame.display.update()
         mainClock.tick(3*CF)
 
-def buy(buy_image,s_name):
+def buy(buy_image,s_name,BorP, AV = 0):
+    font_n = pygame.font.Font('Quicksand.ttf',int(115*CF))
+    font_n2 = pygame.font.Font('Quicksand.ttf',int(116*CF))
     running = True
-    AV = True
+    
+    
     while running:
         click = False
         for event in pygame.event.get():
@@ -247,23 +251,63 @@ def buy(buy_image,s_name):
         base_store = pygame.image.load(os.path.join("Store","base_store.png"))
         buy_button_1 = pygame.image.load(os.path.join("Store","buy button_1.png"))
         buy_button_2 = pygame.image.load(os.path.join("Store","buy button_2.png"))
+        select_button = pygame.image.load(os.path.join("Store","select button.png"))
         
         screen.blit(pygame.transform.scale(base_store, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
 
+        def draw_text(text, font, color, surface, x,y):
+            textobj = font.render(text, 1, color)
+            textrect = textobj.get_rect()
+            textrect.center = (x,y)
+            surface.blit(textobj, textrect)
+
+        #NAME
+        draw_text(s_name, font_n, (0,0,0), screen, (display_siz[0]/2)+3, int(680*CF)+3)#shadow layer
+        draw_text(s_name, font_n2, (0,0,0), screen, (display_siz[0]/2), int(680*CF))#outline layer
+        draw_text(s_name, font_n, (255, 255, 255), screen, (display_siz[0]/2)-2, int(680*CF)-2)
         
         mx, my = pygame.mouse.get_pos()
-        
-        if AV == True:
+
+        if AV == 0:
+            
+                   
+            screen.blit(pygame.transform.scale(select_button, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
+
+            if yes.collidepoint((mx, my)) and click:
+                if BorP[0] == "p":
+                    player_data["p1"][0] = "no"
+                    player_data["p2"][1] = "no"
+                    player_data["p3"][1] = "no"
+                    player_data["p4"][1] = "no"
+                    if BorP[1] == "1":
+                        player_data[BorP][0] = "yes"
+                    else:
+                        player_data[BorP][1] = "yes"
+                if BorP[0] == "b":
+                    BG_data["b1"][0] = "no"
+                    BG_data["b2"][1] = "no"
+                    BG_data["b3"][1] = "no"
+                    BG_data["b4"][1] = "no"
+                    if BorP[1] == "1":
+                        BG_data[BorP][0] = "yes"
+                    else:
+                        BG_data[BorP][1] = "yes"
+                running = False
+                    
+            if no.collidepoint((mx, my)) and click:
+                running = False
+                
+        if AV == 1: #yes or no
             screen.blit(pygame.transform.scale(buy_button_1, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
 
             if yes.collidepoint((mx, my)) and click:
                 i = 0
-                AV = False
+                AV = 2
             if no.collidepoint((mx, my)) and click:
                 running = False
             
                 
-        if AV == False:
+        if AV == 2: #okay button
             screen.blit(pygame.transform.scale(buy_button_2, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
             
             if i != 5:
@@ -274,13 +318,7 @@ def buy(buy_image,s_name):
 
         screen.blit(pygame.transform.scale(buy_image, (ISX,ISY)), [display_siz[0]/2-((ISX)/2), 300*CF])
 
-        def draw_text(text, font, color, surface, x,y):
-            textobj = font.render(text, 1, color)
-            textrect = textobj.get_rect()
-            textrect.center = (x,y)
-            surface.blit(textobj, textrect)
-
-        draw_text(s_name, font2, (255, 255, 255), screen, display_siz[0]/2, int(660*CF))
+        
         
         pygame.display.update()
         mainClock.tick(60)
@@ -304,6 +342,7 @@ def store():
         draw_text('STORE', font1, (255, 255, 255), screen, display_siz[0]/2, int(60*CF))
 
         button = pygame.image.load(os.path.join("Store","button.png"))#button
+        button_ = pygame.image.load(os.path.join("Store","button_.png"))
 
 
 
@@ -340,10 +379,14 @@ def store():
         #coins
         BSW = int(180*CF)
         BSH = int(60*CF)
+        BUY1 = pygame.Rect(300*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2), BSW, BSH)
         BUY2 = pygame.Rect(1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2), BSW, BSH)
         BUY3 = pygame.Rect(300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2), BSW, BSH)
         BUY4 = pygame.Rect(1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2), BSW, BSH)
         coin = pygame.image.load(os.path.join("Store","coin.png"))
+
+        BSW2 = int(200*CF)
+        BSH2 = int(60*CF)
 
 
         mx, my = pygame.mouse.get_pos()
@@ -375,41 +418,76 @@ def store():
             screen.blit(pygame.transform.scale(BG3, (ISX,ISY)), [300*CF, 665*CF])
             screen.blit(pygame.transform.scale(BG4, (ISX,ISY)), [1100*CF, 665*CF])
             
-            #draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
+            
 
-            draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
+            if BG_data["b1"][0] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
+            if BG_data["b2"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
+            if BG_data["b3"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
+            if BG_data["b4"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
 
             #buy with coins button
             CS = 50*CF
 
+            if BG_data["b2"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
 
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
+            if BG_data["b3"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
+            if BG_data["b4"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
-            
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
+            if BUY2.collidepoint((mx, my)) and click and BG_data["b2"][0] == "no":
+                buy(BG2,"MIRAMAR","b2",1)
+                    
+            if BUY3.collidepoint((mx, my)) and click and BG_data["b3"][0] == "no":
+                buy(BG3,"ERANGEL","b3",1)
+                    
+            if BUY4.collidepoint((mx, my)) and click and BG_data["b4"][0] == "no":
+                buy(BG4,"SANHOK","b4",1)
 
-            if BUY2.collidepoint((mx, my)) and click:
-                buy(BG2,"idk2")
+            #select
+            if BG_data["b1"][0] == "no":
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
                 
-            if BUY3.collidepoint((mx, my)) and click:
-                buy(BG3,"idk3")
+
+            if BG_data["b2"][1] == "no":
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
                 
-            if BUY4.collidepoint((mx, my)) and click:
-                buy(BG4,"idk4")
+                    
+            if BG_data["b3"][1] == "no":        
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
+                
+                    
+            if BG_data["b4"][1] == "no": 
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
+
+
+            if BUY1.collidepoint((mx, my)) and click and BG_data["b1"][0] == "no":
+                buy(BG1,"VIKENDI","b1",0)
+                
+            if BUY2.collidepoint((mx, my)) and click and BG_data["b2"][1] == "no" and BG_data["b2"][0] == "yes":
+                buy(BG2,"MIRAMAR","b2",0)
+                    
+            if BUY3.collidepoint((mx, my)) and click and BG_data["b3"][1] == "no" and BG_data["b3"][0] == "yes":
+                buy(BG3,"ERANGEL","b3",0)
+                    
+            if BUY4.collidepoint((mx, my)) and click and BG_data["b4"][1] == "no" and BG_data["b4"][0] == "yes":
+                buy(BG4,"SANHOK","b4",0)
                 
             
 
@@ -431,38 +509,80 @@ def store():
             screen.blit(pygame.transform.scale(BG3, (ISX,ISY)), [300*CF, 665*CF])
             screen.blit(pygame.transform.scale(BG4, (ISX,ISY)), [1100*CF, 665*CF])
 
-            #draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
-            draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
-
-            draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
-            #draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
+            if player_data["p1"][0] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
+            if player_data["p2"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
+            if player_data["p3"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
+            if player_data["p4"][1] == "yes":
+                draw_text('Selected', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
 
             #buy with coins button
-            CS = 50*CF 
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
-            
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
-            
-            screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
-            draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
-            screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
-            if BUY2.collidepoint((mx, my)) and click:
-                buy(BG2,"idk2")
+            CS = 50*CF
+
+            if player_data["p2"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 275*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 275*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 275*CF+ISY-(CS/2)])
+
+            if player_data["p3"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [300*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 300*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [300*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
+
+            if player_data["p4"][0] == "no":
+                screen.blit(pygame.transform.scale(button, (BSW, BSH)), [1100*CF+(ISX/2)-(BSW/2), 695*CF+ISY-(BSH/2)])
+                draw_text('500', font2, (0, 0, 0), screen, 1100*CF+(ISX/2)+(CS/2), 695*CF+ISY)
+                screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
+
+
+            if BUY2.collidepoint((mx, my)) and click and player_data["p2"][0] == "no":
+                buy(BG2,"ADONIA","p2",1)
+                    
+            if BUY3.collidepoint((mx, my)) and click and player_data["p3"][0] == "no":
+                buy(BG3,"REKO","p3",1)
+                    
+            if BUY4.collidepoint((mx, my)) and click and player_data["p4"][0] == "no":
+                buy(BG4,"MELANIE","p3",1)
                 
-            if BUY3.collidepoint((mx, my)) and click:
-                buy(BG3,"idk3")
+            #select
+            if player_data["p1"][0] == "no":
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
                 
-            if BUY4.collidepoint((mx, my)) and click:
-                buy(BG4,"idk4")
+
+            if player_data["p2"][1] == "no":
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
+                
+                    
+            if player_data["p3"][1] == "no":        
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
+                
+                    
+            if player_data["p4"][1] == "no": 
+                screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
+                draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
+                
+            
+                
+            if BUY1.collidepoint((mx, my)) and click:
+                    buy(BG1,"DRACO","p1",0)
+
+            if BUY2.collidepoint((mx, my)) and click and player_data["p2"][1] == "no" and player_data["p2"][0] == "yes":
+                    buy(BG2,"MIRAMAR","p2",0)
+
+            if BUY3.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p3"][0] == "yes":
+                    buy(BG3,"ERANGEL","p3",0)
+                        
+            if BUY4.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p4"][0] == "yes":
+                    buy(BG4,"SANHOK","p4",0)
+            
+                
+            
             
 
         if p == 1:

@@ -1,0 +1,28 @@
+things to be done:
+1. pause button
+2. coins display in game and store
+3. objects in the game 
+4. coins in the game 
+5. game over 
+6. file saver  
+7. buy button 
+8.
+9.
+10. final touch 
+
+time:
+11:20 PM 15-10-2022
+
+
+things to be done:
+3. objects in the game 
+4. coins in the game 
+5. game over 
+6. file saver  
+7. buy button 
+8.
+9.
+10. final touch 
+
+time:
+12:10 PM 16-10-2022

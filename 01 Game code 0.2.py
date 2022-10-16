@@ -21,9 +21,10 @@ clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
 #DATA
-player_data = {"p1":["no"],"p2":["yes","no"],"p3":["yes","no"],"p4":["yes","no"]}
-BG_data = {"b1":["no"],"b2":["yes","no"],"b3":["yes","no"],"b4":["yes","no"]}
-
+player_data = {"p1":["yes"],"p2":["yes","no"],"p3":["yes","no"],"p4":["yes","no"]}
+BG_data = {"b1":["yes"],"b2":["yes","no"],"b3":["yes","no"],"b4":["yes","no"]}
+coins = 0
+high_score = 0
 
 
 player1=[pygame.image.load(os.path.join("players",'1_run0.png')),
@@ -135,7 +136,8 @@ font = pygame.font.Font('Quicksand.ttf',int(200*CF))
 font1 = pygame.font.Font('Quicksand.ttf', int(100*CF))
 font2 = pygame.font.Font('Quicksand.ttf', int(60*CF))
 font3 = pygame.font.Font('Quicksand.ttf', int(30*CF))
-
+font4 = pygame.font.Font('Quicksand.ttf', int(45*CF))
+font4_s = pygame.font.Font('Quicksand.ttf', int(46*CF))
 
 
 def load():
@@ -344,6 +346,8 @@ def store():
         button = pygame.image.load(os.path.join("Store","button.png"))#button
         button_ = pygame.image.load(os.path.join("Store","button_.png"))
 
+        #coins
+        draw_text("Coins: "+str(coins), font4, (255, 255, 255), screen, display_siz[0]-int(130*CF) ,30*CF)
 
 
         storeBG_L1 = pygame.image.load(os.path.join("Store","BG_layer1.png"))
@@ -371,6 +375,7 @@ def store():
         
         B_B = pygame.Rect(10*CF,10*CF, 80*CF,80*CF) #back button 
 
+        
         #box size
         ISX = 576*CF
         ISY = 324*CF
@@ -569,17 +574,17 @@ def store():
                 
             
                 
-            if BUY1.collidepoint((mx, my)) and click:
+            if BUY1.collidepoint((mx, my)) and click and player_data["p1"][0] == "no":
                     buy(BG1,"DRACO","p1",0)
 
             if BUY2.collidepoint((mx, my)) and click and player_data["p2"][1] == "no" and player_data["p2"][0] == "yes":
-                    buy(BG2,"MIRAMAR","p2",0)
+                    buy(BG2,"ADONIA","p2",0)
 
             if BUY3.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p3"][0] == "yes":
-                    buy(BG3,"ERANGEL","p3",0)
+                    buy(BG3,"REKO","p3",0)
                         
             if BUY4.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p4"][0] == "yes":
-                    buy(BG4,"SANHOK","p4",0)
+                    buy(BG4,"MELANIE","p4",0)
             
                 
             
@@ -593,7 +598,6 @@ def store():
             p = 1
 
    
-
         
   
         pygame.display.update()
@@ -602,22 +606,25 @@ def store():
 
 
 
-
 #game code
 def game():
     
     #game background and sound
-    background_image = pygame.image.load(os.path.join("Background","1.png"))
-    BG_S_1 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
-    
-    #background_image = pygame.image.load(os.path.join("Background","2.png"))
-    #BG_S_2 = pygame.mixer.music.load(os.path.join("BG songs","BG_S2.mp3"))
-    
-    #background_image = pygame.image.load(os.path.join("Background","3.png"))
-    #BG_S_3 = pygame.mixer.music.load(os.path.join("BG songs","BG_S3.mp3"))
-    
-    #background_image = pygame.image.load(os.path.join("Background","4.png"))
-    #BG_S_4 = pygame.mixer.music.load(os.path.join("BG songs","BG_S4.mp3"))
+    if BG_data["b1"][0] == "yes":
+        background_image = pygame.image.load(os.path.join("Background","1.png"))
+        BG_S_1 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+
+    if BG_data["b2"][1] == "yes":
+        background_image = pygame.image.load(os.path.join("Background","2.png"))
+        BG_S_2 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+
+    if BG_data["b3"][1] == "yes":
+        background_image = pygame.image.load(os.path.join("Background","3.png"))
+        BG_S_3 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+
+    if BG_data["b4"][1] == "yes":
+        background_image = pygame.image.load(os.path.join("Background","4.png"))
+        BG_S_4 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
 
     background_image = pygame.transform.scale(background_image, display_siz)
     pygame.mixer.music.play(-1)
@@ -635,16 +642,31 @@ def game():
     jump = False
     JN = 4 #jump height
 
-    
+    #score
+    H_Score = 0
+    DIS_I = 0.3*CF
+    global high_score
+    print(high_score)
+    m = 0
+    temp_coins = 0
     
     running_G = True
     while running_G:
-
         
-
+        def draw_text(text, font, color, surface, x,y):
+                    textobj = font.render(text, 1, color)
+                    textrect = textobj.get_rect()
+                    textrect.center = (x,y)
+                    surface.blit(textobj, textrect)
+        
+        
+        click = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running_G = False
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
 
         #Create looping background
         screen.blit(background_image, (i, 0))
@@ -657,10 +679,17 @@ def game():
 
 
         #player
-        screen.blit(pygame.transform.scale(player1[n],(PIX[0],PIX[1])),(int(x),int(y)))#player1
-        #screen.blit(pygame.transform.scale(player2[n],(PIX[0],PIX[1])),(int(x),int(y))) #player2
-        #screen.blit(pygame.transform.scale(player3[n],(PIX[0],PIX[1])),(int(x),int(y))) #player3
-        #screen.blit(pygame.transform.scale(player4[n],(PIX[0],PIX[1])),(int(x),int(y))) #player4
+        if player_data["p1"][0] == "yes":
+            screen.blit(pygame.transform.scale(player1[n],(PIX[0],PIX[1])),(int(x),int(y)))#player1
+
+        if player_data["p2"][1] == "yes":
+            screen.blit(pygame.transform.scale(player2[n],(PIX[0],PIX[1])),(int(x),int(y))) #player2
+
+        if player_data["p3"][1] == "yes":
+            screen.blit(pygame.transform.scale(player3[n],(PIX[0],PIX[1])),(int(x),int(y))) #player3
+
+        if player_data["p4"][1] == "yes":
+            screen.blit(pygame.transform.scale(player4[n],(PIX[0],PIX[1])),(int(x),int(y))) #player4
         
         n = n+1
         if n>=6:
@@ -687,11 +716,34 @@ def game():
                 if event.key == K_ESCAPE:
                     pause()
 
-            
+        #score
+        
+        H_Score = H_Score + DIS_I
+        draw_text((str(int(H_Score))), font2, (0, 0, 0), screen, width-int(105*CF) ,40*CF)
+        
+        if high_score <= H_Score and (high_score >= 50 or H_Score >= 50):
+            high_score = H_Score
+            if m <= 50:
+                draw_text("High Score", font2, (0, 0, 0), screen, width/2 ,100*CF)
+                m = m+1
+
+        #coins
+        draw_text("Coins:"+str(temp_coins), font4, (51, 0, 0), screen, width-int(125*CF) ,100*CF) 
+        #pause
+        P_B = pygame.Rect(10*CF,10*CF, 80*CF,80*CF)
+        
+        pause_b = pygame.image.load(os.path.join("Store","pause.png"))
+        screen.blit(pygame.transform.scale(pause_b, (80*CF,80*CF)), [10*CF, 10*CF])#back button
+
+        mx, my = pygame.mouse.get_pos()
+
+        if P_B.collidepoint((mx, my)) and click:
+            pause()
+        
+        #Refresh
         pygame.time.Clock().tick(60*CF)
         pygame.display.update()
-
-
+        
         #game pause code
         def pause():
             nonlocal running_G
@@ -699,11 +751,7 @@ def game():
             while running:
                 screen.fill((74, 224, 191))
 
-                def draw_text(text, font, color, surface, x,y):
-                    textobj = font.render(text, 1, color)
-                    textrect = textobj.get_rect()
-                    textrect.center = (x,y)
-                    surface.blit(textobj, textrect)
+                
 
                 click = False
                 for event in pygame.event.get():
@@ -796,5 +844,7 @@ def gameover():
 
         pygame.display.update()
         mainClock.tick(60)
+
+
 
 load()

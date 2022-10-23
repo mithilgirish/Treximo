@@ -71,7 +71,40 @@ player4=[pygame.image.load(os.path.join("players",'4_run0.png')),
          pygame.image.load(os.path.join("players",'4_run2.png')),
          pygame.image.load(os.path.join("players",'4_jump.png'))]
 
+BooM = [pygame.image.load(os.path.join("GAME_Object",'BooM_1.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_2.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_3.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_4.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_5.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_6.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_7.png')),
+         pygame.image.load(os.path.join("GAME_Object",'BooM_8.png'))]
 
+Blade = [pygame.image.load(os.path.join("GAME_Object",'b_1.png')),
+         pygame.image.load(os.path.join("GAME_Object",'b_2.png')),
+         pygame.image.load(os.path.join("GAME_Object",'b_3.png')),
+         pygame.image.load(os.path.join("GAME_Object",'b_4.png')),
+         pygame.image.load(os.path.join("GAME_Object",'b_5.png'))]
+
+Spikes = [pygame.image.load(os.path.join("GAME_Object",'spikes01.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes01.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes02.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes02.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes03.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes03.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes04.png')),
+          pygame.image.load(os.path.join("GAME_Object",'spikes04.png'))]
+
+Coins = [ pygame.image.load(os.path.join("GAME_Object",'coins_1.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_2.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_3.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_4.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_5.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_6.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_7.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_8.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_9.png')),
+          pygame.image.load(os.path.join("GAME_Object",'coins_10.png'))]
 
 
 #correction factor
@@ -608,6 +641,8 @@ def store():
 
 #game code
 def game():
+
+    FPS = 30*CF
     
     #game background and sound
     if BG_data["b1"][0] == "yes":
@@ -630,17 +665,31 @@ def game():
     pygame.mixer.music.play(-1)
     
     #background
-    width = display_siz[0]
+    width = display_siz[0]*2
     i = 0
+
+    CC = 0 #coins
+    CX = display_siz[0]
+    CY = 500
+    
+    SC = 0 #spikes
+    SX = display_siz[0]
+    SY = 735
+    
+    BC = 0 #blade
+    BX = display_siz[0]
+    BY = 700
+
+    ob = 0
     
     #player
     n = 0
     PIX = (270*CF,359*CF) #size
-    x = display_siz[0]/2
+    x = display_siz[0]/2 - PIX[0]
     y = display_siz[1]-(PIX[1])-170*CF
     vel_y = 10*CF #speed
     jump = False
-    JN = 4 #jump height
+    JN = 8 #jump height
 
     #score
     H_Score = 0
@@ -648,11 +697,27 @@ def game():
     global high_score
     print(high_score)
     m = 0
+
+    global coins
+    coins = coins
     temp_coins = 0
+
     
     running_G = True
     while running_G:
         
+
+        if H_Score > 50:
+            FPS = 35*CF
+        elif H_Score > 100:
+            FPS = 40*CF
+        elif H_Score > 200:
+            FPS = 45*CF
+        elif H_Score > 350:
+            FPS = 53*CF
+        elif H_Score > 500:
+            FPS = 60*CF
+
         def draw_text(text, font, color, surface, x,y):
                     textobj = font.render(text, 1, color)
                     textrect = textobj.get_rect()
@@ -667,30 +732,243 @@ def game():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-
+                    
+        
         #Create looping background
         screen.blit(background_image, (i, 0))
+        screen.blit(background_image, ((width/2)+i, 0))
         screen.blit(background_image, (width+i, 0))
         if i <= -width:
             screen.blit(background_image, (width+i, 0))
             i = 0
-        i -= abs(int(12*CF))
-
-
-
+        i -= abs(int(24*CF)) #12
+        
+        PCF = 130*CF
         #player
         if player_data["p1"][0] == "yes":
             screen.blit(pygame.transform.scale(player1[n],(PIX[0],PIX[1])),(int(x),int(y)))#player1
+            rect_p = pygame.transform.scale(player1[n],(PIX[0]-PCF,PIX[1]-PCF)).get_rect()
+            rect_p.x = int(x)+PCF*0.6
+            rect_p.y = int(y)+PCF *0.8
 
+            
         if player_data["p2"][1] == "yes":
             screen.blit(pygame.transform.scale(player2[n],(PIX[0],PIX[1])),(int(x),int(y))) #player2
-
+            rect_p = pygame.transform.scale(player2[n],(PIX[0]-PCF,PIX[1]-PCF)).get_rect()
+            rect_p.x = int(x)+PCF*0.6
+            rect_p.y = int(y)+PCF *0.8
+            
         if player_data["p3"][1] == "yes":
-            screen.blit(pygame.transform.scale(player3[n],(PIX[0],PIX[1])),(int(x),int(y))) #player3
-
+            screen.blit(pygame.transform.scale(player3[n],(PIX[0],PIX[1]))),(int(x),int(y)) #player3
+            rect_p = pygame.transform.scale(player3[n],(PIX[0]-PCF,PIX[1]-PCF)).get_rect()
+            rect_p.x = int(x)+PCF*0.6
+            rect_p.y = int(y)+PCF *0.8
+            
         if player_data["p4"][1] == "yes":
             screen.blit(pygame.transform.scale(player4[n],(PIX[0],PIX[1])),(int(x),int(y))) #player4
+            rect_p = pygame.transform.scale(player4[n],(PIX[0]-PCF,PIX[1]-PCF)).get_rect()
+            rect_p.x = int(x)+PCF*0.6
+            rect_p.y = int(y)+PCF *0.8
+
+        #pygame.draw.rect(screen,(0,0,0),rect_p,2)
         
+        #bomb 
+        #BC = BC+0.5
+        #if BC>=7:
+         #   BC=0 
+        #screen.blit(pygame.transform.scale(BooM[int(BC)],(800,800)),(int(x),int(y)))
+        
+        if i == -width:
+            CT1 = 0
+            CT2 = 0
+            CT3 = 0
+            CT4 = 0
+            CT5 = 0
+            ob = random.randint(1,3)
+
+
+        
+            
+        if ob == 1:
+            #blade
+            BS = 200*CF
+            
+            BC = BC+1
+            if BC>=5:
+                BC=0 
+            #screen.blit(pygame.transform.scale(Blade[int(BC)],(BS,BS)),(i,int(BY)))
+            screen.blit(pygame.transform.scale(Blade[int(BC)],(BS,BS)),(int(BX)+i,int(BY)))
+
+            blade_c = pygame.Rect(int(BX)+i+(15*CF),int(BY)+(15*CF),BS-(30*CF),BS-(30*CF))
+
+            rect_b = Blade[int(BC)].get_rect()
+
+            if rect_p.colliderect(blade_c):
+                gameover()
+            
+
+        elif ob == 2:
+            #Spikes
+            SSx = 200*CF
+            SSy = 164*CF
+            
+            SC = SC+1
+            if SC>=8:
+                SC=0 
+            #screen.blit(pygame.transform.scale(Spikes[int(SC)],(SSx,SSy)),(i,int(SY)))
+            screen.blit(pygame.transform.scale(Spikes[int(SC)],(SSx,SSy)),(int(SX)+i,int(SY)))
+
+            spikes_c = pygame.Rect(int(SX)+i+(15*CF),int(SY),SSx-(30*CF),SSy)
+
+            if rect_p.colliderect(spikes_c):
+                gameover()
+            
+        elif ob == 3:
+            #Coins
+            CS = 150*CF
+            
+            CGx = int(300*CF)
+            CGy = int(200*CF)
+            
+            CC = CC+1
+            if CC>=10:
+                CC=0
+
+            
+              
+
+            if i == -width:
+                pa = random.randint(1,5)
+
+            
+            if pa == 1:
+                if CT1 == 0:
+                    c_1 = pygame.Rect(int(CX)+i-CGx,int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i-CGx,int(CY)-CGy))
+                if CT2 == 0:
+                    c_2 = pygame.Rect(int(CX)+i,int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i,int(CY)-CGy))
+
+                if CT3 == 0:
+                    c_3 = pygame.Rect(int(CX)+i+CGx,int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+CGx,int(CY)))
+
+                if CT4 == 0:
+                    c_4 = pygame.Rect(int(CX)+i+(CGx*2),int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*2),int(CY)+CGy))
+
+                if CT5 == 0:
+                    c_5 = pygame.Rect(int(CX)+i+(CGx*3),int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*3),int(CY)+CGy))        
+
+            elif pa == 2:
+                
+                if CT1 == 0:
+                    c_1 = pygame.Rect(int(CX)+i-CGx,int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i-CGx,int(CY)+CGy))
+
+                if CT2 == 0:
+                    c_2 = pygame.Rect(int(CX)+i,int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i,int(CY)+CGy))
+
+                if CT3 == 0:
+                    c_3 = pygame.Rect(int(CX)+i+CGx,int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+CGx,int(CY)))
+
+                if CT4 == 0:
+                    c_4 = pygame.Rect(int(CX)+i+(CGx*2),int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*2),int(CY)-CGy))
+
+                if CT5 == 0:
+                    c_5 = pygame.Rect(int(CX)+i+(CGx*3),int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*3),int(CY)-CGy))
+
+            elif pa == 3:
+                if CT1 == 0:
+                    c_1 = pygame.Rect(int(CX)+i-CGx,int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i-CGx,int(CY)))
+
+                if CT2 == 0:
+                    c_2 = pygame.Rect(int(CX)+i,int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i,int(CY)))
+
+                if CT3 == 0:
+                    c_3 = pygame.Rect(int(CX)+i+CGx,int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+CGx,int(CY)))
+
+                if CT4 == 0:
+                    c_4 = pygame.Rect(int(CX)+i+(CGx*2),int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*2),int(CY)))
+
+                if CT5 == 0:
+                    c_5 = pygame.Rect(int(CX)+i+(CGx*3),int(CY),CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*3),int(CY)))
+
+            elif pa == 4:
+                if CT1 == 0:
+                    c_1 = pygame.Rect(int(CX)+i-CGx,int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i-CGx,int(CY)-CGy))
+
+                if CT2 == 0:
+                    c_2 = pygame.Rect(int(CX)+i,int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i,int(CY)-CGy))
+
+                if CT3 == 0:
+                    c_3 = pygame.Rect(int(CX)+i+CGx,int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+CGx,int(CY)-CGy))
+
+                if CT4 == 0:
+                    c_4 = pygame.Rect(int(CX)+i+(CGx*2),int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*2),int(CY)-CGy))
+
+                if CT5 == 0:
+                    c_5 = pygame.Rect(int(CX)+i+(CGx*3),int(CY)-CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*3),int(CY)-CGy))
+                
+            elif pa == 5:
+                if CT1 == 0:
+                    c_1 = pygame.Rect(int(CX)+i-CGx,int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i-CGx,int(CY)+CGy))
+
+                if CT2 == 0:
+                    c_2 = pygame.Rect(int(CX)+i,int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i,int(CY)+CGy))
+
+                if CT3 == 0:
+                    c_3 = pygame.Rect(int(CX)+i+CGx,int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+CGx,int(CY)+CGy))
+
+                if CT4 == 0:
+                    c_4 = pygame.Rect(int(CX)+i+(CGx*2),int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*2),int(CY)+CGy))
+
+                if CT5 == 0:
+                    c_5 = pygame.Rect(int(CX)+i+(CGx*3),int(CY)+CGy,CS,CS)
+                    screen.blit(pygame.transform.scale(Coins[int(CC)],(CS,CS)),(int(CX)+i+(CGx*3),int(CY)+CGy))
+
+            
+            if rect_p.colliderect(c_1) and CT1 == 0:
+                temp_coins = temp_coins + 1
+                CT1 = 1
+                
+            if rect_p.colliderect(c_2)and CT2 == 0:
+                temp_coins = temp_coins + 1
+                CT2 = 1
+
+            if rect_p.colliderect(c_3)and CT3 == 0:
+                temp_coins = temp_coins + 1
+                CT3 = 1
+
+            if rect_p.colliderect(c_4)and CT4 == 0:
+                temp_coins = temp_coins + 1
+                CT4 = 1
+
+            if rect_p.colliderect(c_5)and CT5 == 0:
+                temp_coins = temp_coins + 1
+                CT5 = 1
+
+        
+            
         n = n+1
         if n>=6:
             n=0
@@ -699,7 +977,7 @@ def game():
         if jump is False and userInput[pygame.K_SPACE]:
             jump = True
         if jump is True:
-            n=7
+            n=7 #jump animation
             y -= vel_y*JN*CF
             vel_y -= 1
             if vel_y < -10*CF:
@@ -719,16 +997,16 @@ def game():
         #score
         
         H_Score = H_Score + DIS_I
-        draw_text((str(int(H_Score))), font2, (0, 0, 0), screen, width-int(105*CF) ,40*CF)
+        draw_text((str(int(H_Score))), font2, (0, 0, 0), screen, display_siz[0]-int(105*CF) ,40*CF)
         
         if high_score <= H_Score and (high_score >= 50 or H_Score >= 50):
             high_score = H_Score
             if m <= 50:
-                draw_text("High Score", font2, (0, 0, 0), screen, width/2 ,100*CF)
+                draw_text("High Score", font2, (0, 0, 0), screen, display_siz[0]/2 ,100*CF)
                 m = m+1
 
         #coins
-        draw_text("Coins:"+str(temp_coins), font4, (51, 0, 0), screen, width-int(125*CF) ,100*CF) 
+        draw_text("Coins:"+str(temp_coins), font4, (51, 0, 0), screen, display_siz[0]-int(125*CF) ,100*CF) 
         #pause
         P_B = pygame.Rect(10*CF,10*CF, 80*CF,80*CF)
         
@@ -741,11 +1019,13 @@ def game():
             pause()
         
         #Refresh
-        pygame.time.Clock().tick(60*CF)
+        pygame.time.Clock().tick(FPS)
         pygame.display.update()
         
         #game pause code
         def pause():
+            global coins
+            
             nonlocal running_G
             running = True
             while running:
@@ -760,7 +1040,6 @@ def game():
                         sys.exit()
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
-                            mainClock.tick(60)
                             running = False
                     if event.type == MOUSEBUTTONDOWN:
                         if event.button == 1:
@@ -769,81 +1048,77 @@ def game():
                 mx, my = pygame.mouse.get_pos()
 
                 if button_1.collidepoint((mx, my)) and click:
-                    mainClock.tick(60)
                     running = False
                 if button_2.collidepoint((mx, my)) and click:
+                    coins = coins + temp_coins
                     pygame.mixer.music.stop()
                     running = False
-                    running_G = False                   
+                    running_G = False
                     
-                if button_3.collidepoint((mx, my)) and click:
-                    pygame.quit()
-                    sys.exit()
+                    
 
                 pygame.draw.rect(screen, (255, 255, 244), button_1)
                 pygame.draw.rect(screen, (255, 255, 244), button_2)
-                pygame.draw.rect(screen, (255, 50, 50), button_3)
 
                 draw_text('CONTINUE', font1, (0, 0, 0), screen, button_x+(button_w/2), button_1y+(button_h/2))
                 draw_text('MAIN MENU', font1, (0, 0, 0), screen, button_x+(button_w/2), button_2y+(button_h/2))
-                draw_text('QUIT', font1, (255,255,255), screen, button_x+(button_w/2), button_3y+(button_h/2))
+
                 draw_text('PAUSED', font, (0, 0, 0), screen, button_x + (button_w / 2), (button_3y + (button_h / 2))/4)
 
                 
-                mainClock.tick(1)
+                mainClock.tick(FPS)
                 pygame.display.update()
+                
+        #game over code
+        def gameover():
+            global coins
+            
+            running = True
+            while running:
+                screen.fill((0, 0, 0))
+
+                click = False
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            coins = coins + temp_coins
+                            game()
+                    if event.type == MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            click = True
+
+                mx, my = pygame.mouse.get_pos()
+
+                if button_1.collidepoint((mx, my)) and click:
+                    coins = coins + temp_coins
+                    game()
+                    pygame.mixer.music.stop()
+                if button_2.collidepoint((mx, my)) and click:
+                    coins = coins + temp_coins
+                    pygame.mixer.music.stop()
+                    main_menu()
+                    
+
+
+                pygame.draw.rect(screen, (255, 255, 244), button_1)
+                pygame.draw.rect(screen, (255, 255, 244), button_2)
+
+                draw_text('START AGAIN', font2, (0, 0, 0), screen, button_x+(button_w/2), button_1y+(button_h/2))
+                draw_text('MAIN MENU', font2, (0, 0, 0), screen, button_x+(button_w/2), button_2y+(button_h/2))
+                
+                draw_text('GAME OVER', font, (255, 24, 24), screen, button_x + (button_w / 2), (button_3y + (button_h / 2))/4)
+
+                mainClock.tick(FPS)
+                pygame.display.update()
+
+
     if running_G == False:
         main_menu()
 
 
-
-#game over code
-def gameover():
-    running = True
-    while running:
-        screen.fill((0, 0, 0))
-
-        def draw_text(text, font, color, surface, x,y):
-            textobj = font.render(text, 1, color)
-            textrect = textobj.get_rect()
-            textrect.center = (x,y)
-            surface.blit(textobj, textrect)
-
-        click = False
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    game()
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
-
-        mx, my = pygame.mouse.get_pos()
-
-        if button_1.collidepoint((mx, my)) and click:
-            game()
-            pygame.mixer.music.stop()
-        if button_2.collidepoint((mx, my)) and click:
-           running = False
-           running = False
-        if button_3.collidepoint((mx, my)) and click:
-            pygame.quit()
-            sys.exit()
-
-        pygame.draw.rect(screen, (255, 255, 244), button_1)
-        pygame.draw.rect(screen, (255, 255, 244), button_2)
-        pygame.draw.rect(screen, (255, 50, 50), button_3)
-
-        draw_text('START AGAIN', font1, (0, 0, 0), screen, button_x+(button_w/2), button_1y+(button_h/2))
-        draw_text('MAIN MENU', font1, (0, 0, 0), screen, button_x+(button_w/2), button_2y+(button_h/2))
-        draw_text('QUIT', font1, (255,255,255), screen, button_x+(button_w/2), button_3y+(button_h/2))
-        draw_text('GAME OVER', font, (255, 24, 24), screen, button_x + (button_w / 2), (button_3y + (button_h / 2))/4)
-
-        pygame.display.update()
-        mainClock.tick(60)
 
 
 

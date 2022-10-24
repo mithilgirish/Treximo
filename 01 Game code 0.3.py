@@ -16,7 +16,7 @@ display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
 
 clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
-
+coinsound = pygame.mixer.Sound(os.path.join("SFX","coins.mp3"))
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
@@ -949,22 +949,27 @@ def game():
             
             if rect_p.colliderect(c_1) and CT1 == 0:
                 temp_coins = temp_coins + 1
+                coinsound.play()
                 CT1 = 1
                 
             if rect_p.colliderect(c_2)and CT2 == 0:
                 temp_coins = temp_coins + 1
+                coinsound.play()
                 CT2 = 1
 
             if rect_p.colliderect(c_3)and CT3 == 0:
                 temp_coins = temp_coins + 1
+                coinsound.play()
                 CT3 = 1
 
             if rect_p.colliderect(c_4)and CT4 == 0:
                 temp_coins = temp_coins + 1
+                coinsound.play()
                 CT4 = 1
 
             if rect_p.colliderect(c_5)and CT5 == 0:
                 temp_coins = temp_coins + 1
+                coinsound.play()
                 CT5 = 1
 
         
@@ -1057,8 +1062,8 @@ def game():
                     
                     
 
-                pygame.draw.rect(screen, (255, 255, 244), button_1)
-                pygame.draw.rect(screen, (255, 255, 244), button_2)
+                pygame.draw.rect(screen, (255, 255, 244), button_1,0,20)
+                pygame.draw.rect(screen, (255, 255, 244), button_2,0,20)
 
                 draw_text('CONTINUE', font1, (0, 0, 0), screen, button_x+(button_w/2), button_1y+(button_h/2))
                 draw_text('MAIN MENU', font1, (0, 0, 0), screen, button_x+(button_w/2), button_2y+(button_h/2))
@@ -1103,8 +1108,8 @@ def game():
                     
 
 
-                pygame.draw.rect(screen, (255, 255, 244), button_1)
-                pygame.draw.rect(screen, (255, 255, 244), button_2)
+                pygame.draw.rect(screen, (255, 255, 244), button_1,0,20)
+                pygame.draw.rect(screen, (255, 255, 244), button_2,0,20)
 
                 draw_text('START AGAIN', font2, (0, 0, 0), screen, button_x+(button_w/2), button_1y+(button_h/2))
                 draw_text('MAIN MENU', font2, (0, 0, 0), screen, button_x+(button_w/2), button_2y+(button_h/2))

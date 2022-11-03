@@ -670,15 +670,15 @@ def game():
 
     CC = 0 #coins
     CX = display_siz[0]
-    CY = 500
+    CY = 550*CF
     
     SC = 0 #spikes
     SX = display_siz[0]
-    SY = 735
+    SY = 735*CF
     
     BC = 0 #blade
     BX = display_siz[0]
-    BY = 700
+    BY = 700*CF
 
     ob = 0
     
@@ -687,9 +687,13 @@ def game():
     PIX = (270*CF,359*CF) #size
     x = display_siz[0]/2 - PIX[0]
     y = display_siz[1]-(PIX[1])-170*CF
-    vel_y = 10*CF #speed
+    vel_y = int(10*CF) #speed
     jump = False
-    JN = 8 #jump height
+    #jump height
+    if DS == 1:
+        JN = 14
+    elif DS != 1:
+        JN = 10
 
     #score
     H_Score = 0
@@ -743,7 +747,7 @@ def game():
             i = 0
         i -= abs(int(24*CF)) #12
         
-        PCF = 130*CF
+        PCF = int(130*CF)
         #player
         if player_data["p1"][0] == "yes":
             screen.blit(pygame.transform.scale(player1[n],(PIX[0],PIX[1])),(int(x),int(y)))#player1
@@ -777,8 +781,9 @@ def game():
         #if BC>=7:
          #   BC=0 
         #screen.blit(pygame.transform.scale(BooM[int(BC)],(800,800)),(int(x),int(y)))
-        
-        if i == -width:
+
+
+        if i <= -width:
             CT1 = 0
             CT2 = 0
             CT3 = 0
@@ -791,7 +796,7 @@ def game():
             
         if ob == 1:
             #blade
-            BS = 200*CF
+            BS = int(200*CF)
             
             BC = BC+1
             if BC>=5:
@@ -809,8 +814,8 @@ def game():
 
         elif ob == 2:
             #Spikes
-            SSx = 200*CF
-            SSy = 164*CF
+            SSx = int(200*CF)
+            SSy = int(164*CF)
             
             SC = SC+1
             if SC>=8:
@@ -825,7 +830,7 @@ def game():
             
         elif ob == 3:
             #Coins
-            CS = 150*CF
+            CS = int(100*CF)
             
             CGx = int(300*CF)
             CGy = int(200*CF)
@@ -837,7 +842,7 @@ def game():
             
               
 
-            if i == -width:
+            if i <= -width:
                 pa = random.randint(1,5)
 
             
@@ -983,11 +988,11 @@ def game():
             jump = True
         if jump is True:
             n=7 #jump animation
-            y -= vel_y*JN*CF
+            y -= vel_y*JN
             vel_y -= 1
             if vel_y < -10*CF:
                 jump = False
-                vel_y = 10*CF
+                vel_y = int(10*CF)
 
         
 

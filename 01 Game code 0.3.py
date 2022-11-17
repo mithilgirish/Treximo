@@ -2,6 +2,7 @@ import pygame
 import sys 
 import os
 import random
+import csv
 from pygame.locals import *
 
 mainClock = pygame.time.Clock() #FPS
@@ -23,9 +24,120 @@ screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 #DATA
 player_data = {"p1":["yes"],"p2":["yes","no"],"p3":["yes","no"],"p4":["yes","no"]}
 BG_data = {"b1":["yes"],"b2":["yes","no"],"b3":["yes","no"],"b4":["yes","no"]}
-coins = 0
-high_score = 0
+coins = [0]
+high_score = [0]
 
+
+def creat():
+    p = open("player_dataCSV.csv","w",newline = "")
+    b = open("BG_dataCSV.csv","w",newline = "")
+    g = open("game_dataCSV.csv","w",newline = "")
+    
+    csv_p = csv.writer(p)
+    csv_b = csv.writer(b)
+    csv_g = csv.writer(g)
+    
+    csv_p.writerow(player_data["p1"])
+    csv_p.writerow(player_data["p2"])
+    csv_p.writerow(player_data["p3"])
+    csv_p.writerow(player_data["p4"])
+
+    csv_b.writerow(BG_data["b1"])
+    csv_b.writerow(BG_data["b2"])
+    csv_b.writerow(BG_data["b3"])
+    csv_b.writerow(BG_data["b4"])
+
+    csv_g.writerow(coins)
+    csv_g.writerow(high_score)
+    
+
+    p.close()
+    b.close()
+    g.close()
+
+def read():
+    global player_data,BG_data,coins,high_score
+    player_data ={} 
+    
+
+    p = open("player_dataCSV.csv","rt")
+    b = open("BG_dataCSV.csv","rt")
+    g = open("game_dataCSV.csv","rt")
+    
+    csv_p = csv.reader(p)
+    csv_b = csv.reader(b)
+    csv_g = csv.reader(g)
+    
+    temp = [0,0,0,0]
+    i = 0
+    for row in csv_p:
+        temp[i] = row
+        i = i+1
+        
+    player_data["p1"] = temp[0]
+    player_data["p2"] = temp[1]
+    player_data["p3"] = temp[2]
+    player_data["p4"] = temp[3]
+
+    temp = [0,0,0,0]
+    i = 0
+    for row in csv_b:
+        temp[i] = row
+        i = i+1
+        
+    BG_data["b1"] = temp[0]
+    BG_data["b2"] = temp[1]
+    BG_data["b3"] = temp[2]
+    BG_data["b4"] = temp[3]
+
+    temp = [0,0]
+    i = 0
+    for row in csv_g:
+        temp[i] = row
+        i = i+1
+
+    #print(temp[0])
+    coins = int(temp[0][0])
+    high_score = int(temp[1][0])
+    print(player_data,BG_data,coins,high_score)
+
+    p.close()
+    b.close()
+    g.close()
+    
+def save():
+    p = open("player_dataCSV.csv","w",newline = "")
+    b = open("BG_dataCSV.csv","w",newline = "")
+    g = open("game_dataCSV.csv","w",newline = "")
+    
+    csv_p = csv.writer(p)
+    csv_b = csv.writer(b)
+    csv_g = csv.writer(g)
+    
+    csv_p.writerow(player_data["p1"])
+    csv_p.writerow(player_data["p2"])
+    csv_p.writerow(player_data["p3"])
+    csv_p.writerow(player_data["p4"])
+
+    csv_b.writerow(BG_data["b1"])
+    csv_b.writerow(BG_data["b2"])
+    csv_b.writerow(BG_data["b3"])
+    csv_b.writerow(BG_data["b4"])
+
+    coins = [coins]
+    high_score = [high_score]
+    print(high_score)
+    csv_g.writerow(coins)
+    csv_g.writerow(high_score)
+    
+
+    p.close()
+    b.close()
+    g.close()
+    
+creat()
+read()
+    
 
 player1=[pygame.image.load(os.path.join("players",'1_run0.png')),
          pygame.image.load(os.path.join("players",'1_run0.png')),
@@ -70,15 +182,6 @@ player4=[pygame.image.load(os.path.join("players",'4_run0.png')),
          pygame.image.load(os.path.join("players",'4_run2.png')),
          pygame.image.load(os.path.join("players",'4_run2.png')),
          pygame.image.load(os.path.join("players",'4_jump.png'))]
-
-BooM = [pygame.image.load(os.path.join("GAME_Object",'BooM_1.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_2.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_3.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_4.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_5.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_6.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_7.png')),
-         pygame.image.load(os.path.join("GAME_Object",'BooM_8.png'))]
 
 Blade = [pygame.image.load(os.path.join("GAME_Object",'b_1.png')),
          pygame.image.load(os.path.join("GAME_Object",'b_2.png')),
@@ -631,7 +734,7 @@ def store():
             p = 1
 
    
-        
+        save()
   
         pygame.display.update()
         mainClock.tick(60)
@@ -703,7 +806,6 @@ def game():
     m = 0
 
     global coins
-    coins = coins
     temp_coins = 0
 
     
@@ -774,15 +876,7 @@ def game():
             rect_p.x = int(x)+PCF*0.6
             rect_p.y = int(y)+PCF *0.8
 
-        #pygame.draw.rect(screen,(0,0,0),rect_p,2)
         
-        #bomb 
-        #BC = BC+0.5
-        #if BC>=7:
-         #   BC=0 
-        #screen.blit(pygame.transform.scale(BooM[int(BC)],(800,800)),(int(x),int(y)))
-
-
         if i <= -width:
             CT1 = 0
             CT2 = 0
@@ -1061,6 +1155,7 @@ def game():
                     running = False
                 if button_2.collidepoint((mx, my)) and click:
                     coins = coins + temp_coins
+                    save()
                     pygame.mixer.music.stop()
                     running = False
                     running_G = False
@@ -1075,7 +1170,7 @@ def game():
 
                 draw_text('PAUSED', font, (0, 0, 0), screen, button_x + (button_w / 2), (button_3y + (button_h / 2))/4)
 
-                
+
                 mainClock.tick(FPS)
                 pygame.display.update()
                 
@@ -1108,6 +1203,7 @@ def game():
                     pygame.mixer.music.stop()
                 if button_2.collidepoint((mx, my)) and click:
                     coins = coins + temp_coins
+                    save()
                     pygame.mixer.music.stop()
                     main_menu()
                     
@@ -1121,6 +1217,7 @@ def game():
                 
                 draw_text('GAME OVER', font, (255, 24, 24), screen, button_x + (button_w / 2), (button_3y + (button_h / 2))/4)
 
+                
                 mainClock.tick(FPS)
                 pygame.display.update()
 

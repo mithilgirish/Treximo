@@ -2,7 +2,7 @@ import pygame
 import sys 
 import os
 import random
-import csv
+import pickle 
 from pygame.locals import *
 
 mainClock = pygame.time.Clock() #FPS
@@ -10,7 +10,7 @@ pygame.init()
  
 pygame.display.set_caption("Treximo") #name
 
-programIcon = pygame.image.load('LOGO.png')
+programIcon = pygame.image.load(os.path.join("Background",'LOGO.png'))
 pygame.display.set_icon(programIcon)# logo/icon
  
 display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)#display size
@@ -21,121 +21,112 @@ coinsound = pygame.mixer.Sound(os.path.join("SFX","coins.mp3"))
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
-#DATA
-player_data = {"p1":["yes"],"p2":["yes","no"],"p3":["yes","no"],"p4":["yes","no"]}
-BG_data = {"b1":["yes"],"b2":["yes","no"],"b3":["yes","no"],"b4":["yes","no"]}
-coins = [0]
-high_score = [0]
+
+
+def Reset(): # to Reset the data to default
+    global high_score,first_run
+    high_score = 0
+    first_run = False
+    c = open(os.path.join("Data","check.bin"),"wb")
+    pickle.dump(first_run,c)
+    c.close()
+
+c = open(os.path.join("Data","check.bin"),"rb")
+
+FRD = pickle.load(c)
+first_run = FRD
+c.close
+
+
+#Reset()
 
 
 def creat():
-    p = open("player_dataCSV.csv","w",newline = "")
-    b = open("BG_dataCSV.csv","w",newline = "")
-    g = open("game_dataCSV.csv","w",newline = "")
-    
-    csv_p = csv.writer(p)
-    csv_b = csv.writer(b)
-    csv_g = csv.writer(g)
-    
-    csv_p.writerow(player_data["p1"])
-    csv_p.writerow(player_data["p2"])
-    csv_p.writerow(player_data["p3"])
-    csv_p.writerow(player_data["p4"])
 
-    csv_b.writerow(BG_data["b1"])
-    csv_b.writerow(BG_data["b2"])
-    csv_b.writerow(BG_data["b3"])
-    csv_b.writerow(BG_data["b4"])
-
-    csv_g.writerow(coins)
-    csv_g.writerow(high_score)
     
+    player_data = {"p1":["yes"],"p2":["no","no"],"p3":["no","no"],"p4":["no","no"]}
+    BG_data = {"b1":["yes"],"b2":["no","no"],"b3":["no","no"],"b4":["no","no"]}
+    coins = 0
+    high_score = 0
 
-    p.close()
-    b.close()
-    g.close()
+    
+    
+    while first_run == False:
+
+      
+        p = open(os.path.join("Data","player_data.bin"),"wb")
+        b = open(os.path.join("Data","BG_data.bin"),"wb")
+        g = open(os.path.join("Data","game_data.bin"),"wb")
+        
+        
+        gameData = [coins,high_score] 
+
+        pickle.dump(player_data,p)
+        pickle.dump(BG_data,b)
+        pickle.dump(gameData,g)
+        
+        p.close()
+        b.close()
+        g.close()
+
+        break
+        
+        
+    
 
 def read():
     global player_data,BG_data,coins,high_score
-    player_data ={} 
     
 
-    p = open("player_dataCSV.csv","rt")
-    b = open("BG_dataCSV.csv","rt")
-    g = open("game_dataCSV.csv","rt")
+    p = open(os.path.join("Data","player_data.bin"),"rb")
+    b = open(os.path.join("Data","BG_data.bin"),"rb")
+    g = open(os.path.join("Data","game_data.bin"),"rb")
+
+    playerD = pickle.load(p)
+    BGD = pickle.load(b)
+    gameD = pickle.load(g)
+
     
-    csv_p = csv.reader(p)
-    csv_b = csv.reader(b)
-    csv_g = csv.reader(g)
-    
-    temp = [0,0,0,0]
-    i = 0
-    for row in csv_p:
-        temp[i] = row
-        i = i+1
-        
-    player_data["p1"] = temp[0]
-    player_data["p2"] = temp[1]
-    player_data["p3"] = temp[2]
-    player_data["p4"] = temp[3]
+    coins = gameD[0] 
+    high_score = gameD[1]
 
-    temp = [0,0,0,0]
-    i = 0
-    for row in csv_b:
-        temp[i] = row
-        i = i+1
-        
-    BG_data["b1"] = temp[0]
-    BG_data["b2"] = temp[1]
-    BG_data["b3"] = temp[2]
-    BG_data["b4"] = temp[3]
-
-    temp = [0,0]
-    i = 0
-    for row in csv_g:
-        temp[i] = row
-        i = i+1
-
-    #print(temp[0])
-    coins = int(temp[0][0])
-    high_score = int(temp[1][0])
-    print(player_data,BG_data,coins,high_score)
+    player_data = playerD
+    BG_data = BGD
 
     p.close()
     b.close()
     g.close()
+    
     
 def save():
-    p = open("player_dataCSV.csv","w",newline = "")
-    b = open("BG_dataCSV.csv","w",newline = "")
-    g = open("game_dataCSV.csv","w",newline = "")
+    global first_run
+    p = open(os.path.join("Data","player_data.bin"),"wb")
+    b = open(os.path.join("Data","BG_data.bin"),"wb")
+    g = open(os.path.join("Data","game_data.bin"),"wb")
+     
+    gameData = [coins,high_score]
+    pickle.dump(player_data,p)
+    pickle.dump(BG_data,b)
+    pickle.dump(gameData,g)
     
-    csv_p = csv.writer(p)
-    csv_b = csv.writer(b)
-    csv_g = csv.writer(g)
-    
-    csv_p.writerow(player_data["p1"])
-    csv_p.writerow(player_data["p2"])
-    csv_p.writerow(player_data["p3"])
-    csv_p.writerow(player_data["p4"])
-
-    csv_b.writerow(BG_data["b1"])
-    csv_b.writerow(BG_data["b2"])
-    csv_b.writerow(BG_data["b3"])
-    csv_b.writerow(BG_data["b4"])
-
-    coins = [coins]
-    high_score = [high_score]
-    print(high_score)
-    csv_g.writerow(coins)
-    csv_g.writerow(high_score)
-    
-
     p.close()
     b.close()
     g.close()
+
+  
+    if high_score > 10:
+        first_run = True
+        c = open(os.path.join("Data","check.bin"),"wb")
+        pickle.dump(first_run,c)
+        c.close()
+
     
-creat()
+
+
+ 
+if first_run != True:
+    creat()
+    
 read()
     
 
@@ -268,16 +259,16 @@ button_1 = pygame.Rect(button_x, button_1y, button_w, button_h)
 button_2 = pygame.Rect(button_x, button_2y, button_w, button_h)
 button_3 = pygame.Rect(button_x, button_3y, button_w, button_h)
 
-font = pygame.font.Font('Quicksand.ttf',int(200*CF))
-font1 = pygame.font.Font('Quicksand.ttf', int(100*CF))
-font2 = pygame.font.Font('Quicksand.ttf', int(60*CF))
-font3 = pygame.font.Font('Quicksand.ttf', int(30*CF))
-font4 = pygame.font.Font('Quicksand.ttf', int(45*CF))
-font4_s = pygame.font.Font('Quicksand.ttf', int(46*CF))
+font = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'),int(200*CF))
+font1 = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'), int(100*CF))
+font2 = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'), int(60*CF))
+font3 = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'), int(30*CF))
+font4 = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'), int(45*CF))
+font4_s = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'), int(46*CF))
 
 
 def load():
-    LOAD_f = pygame.font.Font('FFF.ttf',int(180*CF))
+    LOAD_f = pygame.font.Font(os.path.join("Font",'FFF.ttf'),int(180*CF))
     
     for i in range(0,256):
         pygame.draw.rect(screen, (i, i, i), (pygame.Rect((display_siz[0]-(300*CF))/2, 800*CF, 300*CF, 10*CF)))
@@ -363,8 +354,9 @@ def main_menu():
         mainClock.tick(3*CF)
 
 def buy(buy_image,s_name,BorP, AV = 0):
-    font_n = pygame.font.Font('Quicksand.ttf',int(115*CF))
-    font_n2 = pygame.font.Font('Quicksand.ttf',int(116*CF))
+    global coins
+    font_n = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'),int(115*CF))
+    font_n2 = pygame.font.Font(os.path.join("Font",'Quicksand.ttf'),int(116*CF))
     running = True
     
     
@@ -413,19 +405,25 @@ def buy(buy_image,s_name,BorP, AV = 0):
 
             if yes.collidepoint((mx, my)) and click:
                 if BorP[0] == "p":
+
+                    #unselect everything
                     player_data["p1"][0] = "no"
                     player_data["p2"][1] = "no"
                     player_data["p3"][1] = "no"
                     player_data["p4"][1] = "no"
+                    
                     if BorP[1] == "1":
                         player_data[BorP][0] = "yes"
                     else:
                         player_data[BorP][1] = "yes"
-                if BorP[0] == "b":
+                elif BorP[0] == "b":
+
+                    #unselect everything
                     BG_data["b1"][0] = "no"
                     BG_data["b2"][1] = "no"
                     BG_data["b3"][1] = "no"
                     BG_data["b4"][1] = "no"
+                    
                     if BorP[1] == "1":
                         BG_data[BorP][0] = "yes"
                     else:
@@ -435,17 +433,53 @@ def buy(buy_image,s_name,BorP, AV = 0):
             if no.collidepoint((mx, my)) and click:
                 running = False
                 
-        if AV == 1: #yes or no
+        elif AV == 1: #yes or no
             screen.blit(pygame.transform.scale(buy_button_1, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
 
             if yes.collidepoint((mx, my)) and click:
-                i = 0
-                AV = 2
+                
+                if coins >= 500:
+                    if BorP[0] == "b":
+                        if BorP[1] == "2":
+                            BG_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                            
+                        if BorP[1] == "3":
+                            BG_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                            
+                        if BorP[1] == "4":
+                            BG_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                            
+                    elif BorP[0] == "p":
+                        if BorP[1] == "2":
+                            player_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                            
+                        if BorP[1] == "3":
+                            player_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                            
+                        if BorP[1] == "4":
+                            player_data[BorP][0] = "yes"
+                            coins = coins - 500
+                            
+                    running = False
+                            
+                else:
+                    i = 0
+                    AV = 2
             if no.collidepoint((mx, my)) and click:
                 running = False
             
                 
-        if AV == 2: #okay button
+        elif AV == 2: #okay button
             screen.blit(pygame.transform.scale(buy_button_2, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
             
             if i != 5:
@@ -603,17 +637,17 @@ def store():
                 draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
                 
 
-            if BG_data["b2"][1] == "no":
+            if BG_data["b2"][1] == "no" and BG_data["b2"][0] == "yes":
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
                 
                     
-            if BG_data["b3"][1] == "no":        
+            if BG_data["b3"][1] == "no" and BG_data["b3"][0] == "yes":        
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
                 
                     
-            if BG_data["b4"][1] == "no": 
+            if BG_data["b4"][1] == "no" and BG_data["b4"][0] == "yes": 
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
 
@@ -686,7 +720,7 @@ def store():
                 buy(BG3,"REKO","p3",1)
                     
             if BUY4.collidepoint((mx, my)) and click and player_data["p4"][0] == "no":
-                buy(BG4,"MELANIE","p3",1)
+                buy(BG4,"MELANIE","p4",1)
                 
             #select
             if player_data["p1"][0] == "no":
@@ -694,17 +728,17 @@ def store():
                 draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 275*CF+ISY)
                 
 
-            if player_data["p2"][1] == "no":
+            if player_data["p2"][1] == "no" and player_data["p2"][0] == "yes":
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 275*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 275*CF+ISY)
                 
                     
-            if player_data["p3"][1] == "no":        
+            if player_data["p3"][1] == "no" and player_data["p3"][0] == "yes":        
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [300*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 300*CF+(ISX/2), 695*CF+ISY)
                 
                     
-            if player_data["p4"][1] == "no": 
+            if player_data["p4"][1] == "no" and player_data["p4"][0] == "yes": 
                 screen.blit(pygame.transform.scale(button_, (BSW2, BSH2)), [1100*CF+(ISX/2)-(BSW2/2), 695*CF+ISY-(BSH/2)])
                 draw_text('Select', font2, (255, 255, 255), screen, 1100*CF+(ISX/2), 695*CF+ISY)
                 
@@ -733,7 +767,7 @@ def store():
         else:
             p = 1
 
-   
+        
         save()
   
         pygame.display.update()
@@ -802,7 +836,7 @@ def game():
     H_Score = 0
     DIS_I = 0.3*CF
     global high_score
-    print(high_score)
+
     m = 0
 
     global coins
@@ -847,7 +881,7 @@ def game():
         if i <= -width:
             screen.blit(background_image, (width+i, 0))
             i = 0
-        i -= abs(int(24*CF)) #12
+        i -= abs(int(24*CF)) 
         
         PCF = int(130*CF)
         #player
@@ -895,7 +929,7 @@ def game():
             BC = BC+1
             if BC>=5:
                 BC=0 
-            #screen.blit(pygame.transform.scale(Blade[int(BC)],(BS,BS)),(i,int(BY)))
+
             screen.blit(pygame.transform.scale(Blade[int(BC)],(BS,BS)),(int(BX)+i,int(BY)))
 
             blade_c = pygame.Rect(int(BX)+i+(15*CF),int(BY)+(15*CF),BS-(30*CF),BS-(30*CF))
@@ -914,7 +948,7 @@ def game():
             SC = SC+1
             if SC>=8:
                 SC=0 
-            #screen.blit(pygame.transform.scale(Spikes[int(SC)],(SSx,SSy)),(i,int(SY)))
+
             screen.blit(pygame.transform.scale(Spikes[int(SC)],(SSx,SSy)),(int(SX)+i,int(SY)))
 
             spikes_c = pygame.Rect(int(SX)+i+(15*CF),int(SY),SSx-(30*CF),SSy)
@@ -1102,10 +1136,11 @@ def game():
         
         H_Score = H_Score + DIS_I
         draw_text((str(int(H_Score))), font2, (0, 0, 0), screen, display_siz[0]-int(105*CF) ,40*CF)
-        
-        if high_score <= H_Score and (high_score >= 50 or H_Score >= 50):
+
+        if high_score <= H_Score:
+            
             high_score = H_Score
-            if m <= 50:
+            if m <= 50 and first_run != False:
                 draw_text("High Score", font2, (0, 0, 0), screen, display_siz[0]/2 ,100*CF)
                 m = m+1
 
@@ -1155,6 +1190,7 @@ def game():
                     running = False
                 if button_2.collidepoint((mx, my)) and click:
                     coins = coins + temp_coins
+                    
                     save()
                     pygame.mixer.music.stop()
                     running = False
@@ -1203,6 +1239,7 @@ def game():
                     pygame.mixer.music.stop()
                 if button_2.collidepoint((mx, my)) and click:
                     coins = coins + temp_coins
+                    
                     save()
                     pygame.mixer.music.stop()
                     main_menu()

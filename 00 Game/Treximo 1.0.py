@@ -17,7 +17,14 @@ display_siz = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
 
 clicksound = pygame.mixer.Sound(os.path.join("SFX","click.ogg"))#click sound
+buysound = pygame.mixer.Sound(os.path.join("SFX","buy.mp3"))
+errorsound = pygame.mixer.Sound(os.path.join("SFX","error.mp3"))
+
 coinsound = pygame.mixer.Sound(os.path.join("SFX","coins.mp3"))
+GMsound = pygame.mixer.Sound(os.path.join("SFX","GameOver.mp3"))
+pausesound = pygame.mixer.Sound(os.path.join("SFX","pause.mp3"))
+jumpsound = pygame.mixer.Sound(os.path.join("SFX","jump.mp3"))
+jump2sound = pygame.mixer.Sound(os.path.join("SFX","jump2.mp3"))
 
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN) #initialize
 
@@ -128,7 +135,8 @@ if first_run != True:
     creat()
     
 read()
-    
+
+  
 
 player1=[pygame.image.load(os.path.join("players",'1_run0.png')),
          pygame.image.load(os.path.join("players",'1_run0.png')),
@@ -303,8 +311,9 @@ def load():
     
     
 def main_menu():
-    menu_song = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+    pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
     pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.75)
     while True:
         
 
@@ -404,6 +413,7 @@ def buy(buy_image,s_name,BorP, AV = 0):
             screen.blit(pygame.transform.scale(select_button, (755*CF,960*CF)), [display_siz[0]/2-((755*CF)/2), 50*CF])
 
             if yes.collidepoint((mx, my)) and click:
+                buysound.play()
                 if BorP[0] == "p":
 
                     #unselect everything
@@ -431,6 +441,7 @@ def buy(buy_image,s_name,BorP, AV = 0):
                 running = False
                     
             if no.collidepoint((mx, my)) and click:
+                clicksound.play()
                 running = False
                 
         elif AV == 1: #yes or no
@@ -439,6 +450,7 @@ def buy(buy_image,s_name,BorP, AV = 0):
             if yes.collidepoint((mx, my)) and click:
                 
                 if coins >= 500:
+                    buysound.play()
                     if BorP[0] == "b":
                         if BorP[1] == "2":
                             BG_data[BorP][0] = "yes"
@@ -473,9 +485,11 @@ def buy(buy_image,s_name,BorP, AV = 0):
                     running = False
                             
                 else:
+                    errorsound.play()
                     i = 0
                     AV = 2
             if no.collidepoint((mx, my)) and click:
+                clicksound.play()
                 running = False
             
                 
@@ -486,6 +500,7 @@ def buy(buy_image,s_name,BorP, AV = 0):
                 i = i+1
             if i == 5:
                 if ok.collidepoint((mx, my)) and click:
+                    clicksound.play()
                     running = False
 
         screen.blit(pygame.transform.scale(buy_image, (ISX,ISY)), [display_siz[0]/2-((ISX)/2), 300*CF])
@@ -567,18 +582,21 @@ def store():
         mx, my = pygame.mouse.get_pos()
 
         if BG_B.collidepoint((mx, my)) and click:
+            clicksound.play()
             p=1
         if P_B.collidepoint((mx, my)) and click:
+            clicksound.play()
             p=2
         if B_B.collidepoint((mx, my)) and click:
+            clicksound.play()
             running = False
             
 
 
         
         def store_BG(): #background
-            pygame.draw.rect(screen, (226, 226, 233), BG_B)
-            pygame.draw.rect(screen, (22, 22, 29), P_B)
+            pygame.draw.rect(screen, (226, 226, 233), BG_B,0,7)
+            pygame.draw.rect(screen, (22, 22, 29), P_B,0,7)
 
             draw_text('Background', font3, (0, 0, 0), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
             draw_text('Player', font3, (255, 255, 255), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
@@ -623,12 +641,15 @@ def store():
                 screen.blit(pygame.transform.scale(coin, (CS,CS)), [1100*CF+(ISX/2)-CS-(35*CF), 695*CF+ISY-(CS/2)])
 
             if BUY2.collidepoint((mx, my)) and click and BG_data["b2"][0] == "no":
+                clicksound.play()
                 buy(BG2,"MIRAMAR","b2",1)
                     
             if BUY3.collidepoint((mx, my)) and click and BG_data["b3"][0] == "no":
+                clicksound.play()
                 buy(BG3,"ERANGEL","b3",1)
                     
             if BUY4.collidepoint((mx, my)) and click and BG_data["b4"][0] == "no":
+                clicksound.play()
                 buy(BG4,"SANHOK","b4",1)
 
             #select
@@ -653,23 +674,27 @@ def store():
 
 
             if BUY1.collidepoint((mx, my)) and click and BG_data["b1"][0] == "no":
+                clicksound.play()
                 buy(BG1,"VIKENDI","b1",0)
                 
             if BUY2.collidepoint((mx, my)) and click and BG_data["b2"][1] == "no" and BG_data["b2"][0] == "yes":
+                clicksound.play()
                 buy(BG2,"MIRAMAR","b2",0)
                     
             if BUY3.collidepoint((mx, my)) and click and BG_data["b3"][1] == "no" and BG_data["b3"][0] == "yes":
+                clicksound.play()
                 buy(BG3,"ERANGEL","b3",0)
                     
             if BUY4.collidepoint((mx, my)) and click and BG_data["b4"][1] == "no" and BG_data["b4"][0] == "yes":
+                clicksound.play()
                 buy(BG4,"SANHOK","b4",0)
                 
             
 
             
         def store_P(): #player
-            pygame.draw.rect(screen, (22, 22, 29), BG_B)
-            pygame.draw.rect(screen, (226, 226, 233), P_B)
+            pygame.draw.rect(screen, (22, 22, 29), BG_B,0,7)
+            pygame.draw.rect(screen, (226, 226, 233), P_B,0,7)
 
             draw_text('Background', font3, (255, 255, 255), screen, 320*CF+(BSX/2), 150*CF+(BSY/2))
             draw_text('Player', font3, (0, 0, 0), screen, 520*CF+((BSX-(50*CF))/2), 150*CF+(BSY/2))
@@ -714,12 +739,15 @@ def store():
 
 
             if BUY2.collidepoint((mx, my)) and click and player_data["p2"][0] == "no":
+                clicksound.play()
                 buy(BG2,"ADONIA","p2",1)
                     
             if BUY3.collidepoint((mx, my)) and click and player_data["p3"][0] == "no":
+                clicksound.play()
                 buy(BG3,"REKO","p3",1)
                     
             if BUY4.collidepoint((mx, my)) and click and player_data["p4"][0] == "no":
+                clicksound.play()
                 buy(BG4,"MELANIE","p4",1)
                 
             #select
@@ -745,15 +773,19 @@ def store():
             
                 
             if BUY1.collidepoint((mx, my)) and click and player_data["p1"][0] == "no":
+                    clicksound.play()
                     buy(BG1,"DRACO","p1",0)
 
             if BUY2.collidepoint((mx, my)) and click and player_data["p2"][1] == "no" and player_data["p2"][0] == "yes":
+                    clicksound.play()
                     buy(BG2,"ADONIA","p2",0)
 
             if BUY3.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p3"][0] == "yes":
+                    clicksound.play()
                     buy(BG3,"REKO","p3",0)
                         
             if BUY4.collidepoint((mx, my)) and click and player_data["p3"][1] == "no" and player_data["p4"][0] == "yes":
+                    clicksound.play()
                     buy(BG4,"MELANIE","p4",0)
             
                 
@@ -762,6 +794,7 @@ def store():
 
         if p == 1:
             store_BG()
+            
         elif p == 2:
             store_P()
         else:
@@ -778,25 +811,25 @@ def store():
 
 #game code
 def game():
-
+    pygame.mixer.music.set_volume(1)
     FPS = 30*CF
     
     #game background and sound
     if BG_data["b1"][0] == "yes":
         background_image = pygame.image.load(os.path.join("Background","1.png"))
-        BG_S_1 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+        pygame.mixer.music.load(os.path.join("BG songs","1.mp3"))
 
     if BG_data["b2"][1] == "yes":
         background_image = pygame.image.load(os.path.join("Background","2.png"))
-        BG_S_2 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+        pygame.mixer.music.load(os.path.join("BG songs","2.mp3"))
 
     if BG_data["b3"][1] == "yes":
         background_image = pygame.image.load(os.path.join("Background","3.png"))
-        BG_S_3 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+        pygame.mixer.music.load(os.path.join("BG songs","3.mp3"))
 
     if BG_data["b4"][1] == "yes":
         background_image = pygame.image.load(os.path.join("Background","4.png"))
-        BG_S_4 = pygame.mixer.music.load(os.path.join("BG songs","Main menu.mp3"))
+        pygame.mixer.music.load(os.path.join("BG songs","4.mp3"))
 
     background_image = pygame.transform.scale(background_image, display_siz)
     pygame.mixer.music.play(-1)
@@ -1113,12 +1146,14 @@ def game():
         #Jump
         userInput = pygame.key.get_pressed()
         if jump is False and userInput[pygame.K_SPACE]:
+            jumpsound.play()
             jump = True
         if jump is True:
             n=7 #jump animation
             y -= vel_y*JN
             vel_y -= 1
             if vel_y < -10*CF:
+                jump2sound.play()
                 jump = False
                 vel_y = int(10*CF)
 
@@ -1163,6 +1198,8 @@ def game():
         
         #game pause code
         def pause():
+            pausesound.play()
+            pygame.mixer.music.set_volume(0.1)
             global coins
             
             nonlocal running_G
@@ -1179,6 +1216,8 @@ def game():
                         sys.exit()
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
+                            pausesound.play()
+                            pygame.mixer.music.set_volume(1)
                             running = False
                     if event.type == MOUSEBUTTONDOWN:
                         if event.button == 1:
@@ -1187,8 +1226,11 @@ def game():
                 mx, my = pygame.mouse.get_pos()
 
                 if button_1.collidepoint((mx, my)) and click:
+                    pausesound.play()
+                    pygame.mixer.music.set_volume(1)
                     running = False
                 if button_2.collidepoint((mx, my)) and click:
+                    pygame.mixer.music.set_volume(1)
                     coins = coins + temp_coins
                     
                     save()
@@ -1213,9 +1255,15 @@ def game():
         #game over code
         def gameover():
             global coins
-            
+            GMsound.play()
+            i = 1
             running = True
             while running:
+                
+                if i > 0.1:
+                    i = i-0.05 
+                    pygame.mixer.music.set_volume(i)
+                    
                 screen.fill((0, 0, 0))
 
                 click = False
@@ -1226,6 +1274,8 @@ def game():
                     if event.type == KEYDOWN:
                         if event.key == K_ESCAPE:
                             coins = coins + temp_coins
+                            pygame.mixer.music.set_volume(1)
+                            save()
                             game()
                     if event.type == MOUSEBUTTONDOWN:
                         if event.button == 1:
@@ -1235,9 +1285,12 @@ def game():
 
                 if button_1.collidepoint((mx, my)) and click:
                     coins = coins + temp_coins
+                    pygame.mixer.music.set_volume(1)
+                    save()
                     game()
                     pygame.mixer.music.stop()
                 if button_2.collidepoint((mx, my)) and click:
+                    pygame.mixer.music.set_volume(1)
                     coins = coins + temp_coins
                     
                     save()
@@ -1261,8 +1314,6 @@ def game():
 
     if running_G == False:
         main_menu()
-
-
 
 
 
